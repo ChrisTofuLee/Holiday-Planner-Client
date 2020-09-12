@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Layout, Menu, Button, Input } from "antd";
 import Logo from "./assets/logoFinal.png";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 const { Search } = Input;
 const Navigation = () => {
   return (
