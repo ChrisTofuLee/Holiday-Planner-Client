@@ -31,16 +31,7 @@ const Navigation = () => {
             <NavLink to="/dashboard">dashboard</NavLink>
           </Menu.Item>
         </Menu>
-        <Search
-          placeholder="input search text"
-          onSearch={(value) => console.log(value)}
-          style={{
-            margin: "auto",
-            float: "center",
-            width: 200,
-            alignItems: "center",
-          }}
-        />
+        
         <NavLink to="/">
           <div
             style={{

@@ -1,14 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Input, Button, Card, Form } from "antd";
-
-const { Search } = Input;
+import EmailBar from "../components/emailBar";
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
 };
 
 const Home = () => {
@@ -20,8 +16,21 @@ const Home = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const [logIn, setLogIn] = useState(true);
+
+  const onSignUp = (event) => {
+    event.preventDefault();
+    if (logIn) {
+      setLogIn(false);
+      console.log(logIn);
+    } else {
+      setLogIn(true);
+      console.log(logIn);
+    }
+  };
+
   return (
-    <Row style={{}}>
+    <Row>
       <Col
         span={12}
         style={{
@@ -33,7 +42,7 @@ const Home = () => {
           textAlign: "center",
         }}
       >
-        <h1 style={{ color: "white", textShadow: "2px 2px #153438" }}>
+        <h1 style={{ color: "white", textShadow: "2px 2px #FF4D4F" }}>
           Holiday Planner
         </h1>
       </Col>
@@ -52,10 +61,28 @@ const Home = () => {
               }}
             >
               <Card
-                title="Log In"
-                headStyle={{ backgroundColor: "#FAFAFA", color: "red", fontSize: "30px" }}
+                title={logIn ? "Log In" : "Sign Up"}
+                headStyle={{
+                  backgroundColor: "#FAFAFA",
+                  color: "red",
+                  paddingLeft: "80px",
+                  fontSize: "30px",
+                }}
                 bordered={false}
-                style={{ width: 500 }}
+                style={{
+                  width: 500,
+                  boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)",
+                }}
+                extra={
+                  <Button
+                    shape="round"
+                    onClick={onSignUp}
+                    danger
+                    htmlType="submit"
+                  >
+                    {!logIn ? "Log In" : "Sign Up"}
+                  </Button>
+                }
               >
                 <Form
                   {...layout}
@@ -64,7 +91,8 @@ const Home = () => {
                   onFinish={onFinish}
                   onFinishFailed={onFinishFailed}
                 >
-                  <Form.Item
+                  <EmailBar abc={logIn} />
+                  {/* <Form.Item
                     label="Username"
                     name="username"
                     rules={[
@@ -75,7 +103,7 @@ const Home = () => {
                     ]}
                     style={{ width: "90%" }}
                   >
-                    <Input placeholder="the.one@example.com"  />
+                    <Input placeholder="the.one@example.com" />
                   </Form.Item>
                   <Form.Item
                     label="Display Name"
@@ -103,15 +131,7 @@ const Home = () => {
                     style={{ width: "90%" }}
                   >
                     <Input.Password placeholder="*******" />
-                  </Form.Item>
-
-                  {/* <Form.Item
-                {...tailLayout}
-                name="remember"
-                valuePropName="checked"
-              >
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item> */}
+                  </Form.Item> */}
 
                   <Form.Item
                     style={{
@@ -125,22 +145,22 @@ const Home = () => {
                   >
                     <Button
                       shape="round"
-                      style={{ marginRight: "20px", marginBottom: "20px", width: "120px"}}
+                      style={{
+                        marginBottom: "20px",
+                        width: "120px",
+                      }}
                       size="large"
                       danger
                       type="primary"
                       htmlType="submit"
                     >
-                      Log In
+                      {logIn ? "Log In" : "Sign Up"}
                     </Button>
-                    <Button shape="round" style={{width: "120px"}} danger size="large" htmlType="submit">
-                      Sign Up
-                    </Button>
+                    
                   </Form.Item>
                 </Form>
               </Card>
             </div>
-            
           </div>
         </div>
       </Col>
