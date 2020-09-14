@@ -7,11 +7,11 @@ const { Header, Content } = Layout;
 const { Search } = Input;
 const Navigation = () => {
   return (
-    <Header>
+    <Header style={{ opacity: "80%" }}>
       <nav>
         <img className="logo" alt="logo" src={Logo} />
         <Menu
-          theme="dark"
+          // theme="dark"
           mode="horizontal"
           style={{
             padding: "0px",
@@ -30,23 +30,35 @@ const Navigation = () => {
           <Menu.Item key="dashboard">
             <NavLink to="/dashboard">dashboard</NavLink>
           </Menu.Item>
-          <Search
-            placeholder="input search text"
-            onSearch={(value) => console.log(value)}
-            style={{ width: 200, alignItems: "center" }}
-          />
-          <Menu.Item
+        </Menu>
+        <Search
+          placeholder="input search text"
+          onSearch={(value) => console.log(value)}
+          style={{
+            margin: "auto",
+            float: "center",
+            width: 200,
+            alignItems: "center",
+          }}
+        />
+        <NavLink to="/">
+          <div
+            style={{
+              float: "right",
+              display: "table-cell",
+              verticalAlign: "middle",
+            }}
+          ></div>
+          <Button
+            type="danger"
+            ghost
             key="signOut"
-            style={{ float: "right" }}
+            style={{ marginTop: "15px"}}
             className="float-right"
           >
-            <NavLink to="/">
-              <Button type="danger" ghost>
-                Sign Out
-              </Button>
-            </NavLink>
-          </Menu.Item>
-        </Menu>
+            Sign Out
+          </Button>
+        </NavLink>
       </nav>
     </Header>
   );

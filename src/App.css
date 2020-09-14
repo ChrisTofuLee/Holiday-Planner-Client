@@ -1,0 +1,5 @@
+@import '~antd/dist/antd.css';
+
+.ant-menu{
+    background: #ff7875;
+    }
