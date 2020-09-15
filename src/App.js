@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { HashRouter } from "react-router-dom";
+import { Layout } from "antd";
 
-import Navigation from "./NavBar";
 import Routes from "./Routes";
-// import Header from "./components/Header";
-import 'antd/dist/antd.css'
+import NavBar from "./components/NavBar";
+import UserContext from "./context/UserContext";
+
+import "./App.css";
+
+const { Header, Footer, Content } = Layout;
 
 const App = () => {
+  const [user, setUser] = useState({});
+
   return (
     <HashRouter>
-      <Navigation />
-      <div className="container my-4">
-        {/* <Header /> */}
-        <Routes />
-      </div>
+      <Layout>
+        <UserContext.Provider value={{ user, setUser }}>
+          <Header style={{ padding: 0 }}>
+            <NavBar />
+          </Header>
+          <Content>
+            <Routes />
+          </Content>
+        </UserContext.Provider>
+        <Footer>Footer</Footer>
+      </Layout>
     </HashRouter>
   );
 };
