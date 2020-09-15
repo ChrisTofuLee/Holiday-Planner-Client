@@ -1,31 +1,31 @@
 import React, { useState } from "react";
 import { HashRouter } from "react-router-dom";
-import Navigation from "./NavBar";
+import { Layout } from "antd";
+
 import Routes from "./Routes";
-// import Header from "./components/Header";
+import NavBar from "./components/NavBar";
+import UserContext from "./context/UserContext";
+
 import "./App.css";
-import palmTree from "./assets/palmTree.jpg";
+
+const { Header, Footer, Content } = Layout;
 
 const App = () => {
-  const [backgroundImage, setBackgroundImage] = useState(`url(${palmTree})`);
-  const [backgroundSize, setBackgroundSize] = useState("50% 100%");
-  
+  const [user, setUser] = useState({});
+
   return (
     <HashRouter>
-      <div
-        style={{
-          minHeight: "100vh",
-          backgroundRepeat: "no-repeat",
-          backgroundImage: backgroundImage,
-          backgroundSize: backgroundSize,
-        }}
-      >
-        <Navigation />
-        {/* <div className="container my-4"> */}
-        {/* <Header /> */}
-        <Routes />
-        {/* </div> */}
-      </div>
+      <Layout>
+        <UserContext.Provider value={{ user, setUser }}>
+          <Header style={{ padding: 0 }}>
+            <NavBar />
+          </Header>
+          <Content>
+            <Routes />
+          </Content>
+        </UserContext.Provider>
+        <Footer>Footer</Footer>
+      </Layout>
     </HashRouter>
   );
 };
