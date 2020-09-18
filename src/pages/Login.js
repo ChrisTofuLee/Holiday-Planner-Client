@@ -13,6 +13,8 @@ const Login = () => {
         style={{
           minHeight: "100vh",
           objectFit: "cover",
+          backgroundSize: "50% 100%",
+          height: "100%"
         }}
       />
     </Col>

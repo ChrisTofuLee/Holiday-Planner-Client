@@ -26,7 +26,7 @@ const LoginContainer = () => {
       });
 
       const { token } = data;
-
+// change destructured email & token to data if you want to include 'displayName'
       setUser({ email, token });
     } catch (error) {
       setError(`Login failed - ${error.message}`);
