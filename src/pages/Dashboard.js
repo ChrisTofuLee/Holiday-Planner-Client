@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import {
   Col,
@@ -13,6 +13,7 @@ import {
   List,
   Avatar,
   Space,
+  Modal,
 } from "antd";
 import {
   CloseOutlined,
@@ -22,7 +23,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import "./Dashboard.css";
-
+import UserContext from "../context/UserContext";
 import seaside from "../assets/seaside1.jpg";
 
 const { Panel } = Collapse;
@@ -61,34 +62,72 @@ const IconText = ({ icon, text }) => (
 );
 
 const Dashboard = () => {
-  const [foodData, setFoodData] = useState([])
-  const [nightlifeData, setNightlifeData] = useState([])
-  const [activitiesData, setActivitiesData] = useState([])
+  const { user } = useContext(UserContext);
+  const [foodData, setFoodData] = useState("");
+  const [nightlifeData, setNightlifeData] = useState("");
+  const [activitiesData, setActivitiesData] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [foodCheck, setFoodCheck] = useState(false)
+  const [foodCheck, setFoodCheck] = useState(false);
+  const [activitiesCheck, setActivitiesCheck] = useState(false);
+  const [nightlifeCheck, setNightlifeCheck] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   //should be a way to extract true or false from switch without function as it's in a form.item?
-    const handleSwitch = (checked) => {
-      setFoodCheck(checked)
-    }
+  const handleFoodSwitch = (checked) => {
+    setFoodCheck(checked);
+  };
+  const handleNightlifeSwitch = (checked) => {
+    setNightlifeCheck(checked);
+  };
+  const handleActivitiesSwitch = (checked) => {
+    setActivitiesCheck(checked);
+  };
 
-  const handleFormSubmit = async ({searchTerm, activities, food, nightlife}) => {
+  // submit button functionality
+  const handleFormSubmit = async ({ searchTerm }) => {
     try {
-      const { data } = await axios.post(`${API_URL}/auth/register`, {
-      activities, food, nightlife, searchTerm
-    })
-    const {foodResults, nightlifeResults, activitiesResults} = data
-    setFoodData(foodResults)
-    setNightlifeData(nightlifeResults)
-    setActivitiesData(activitiesResults)
-    setShowResults(true)
-    console.log(foodResults)
-  }
-    catch (error) {
+      setLoading(true);
+      console.log(searchTerm, nightlifeCheck);
+      const payload = {
+        // activities, food, nightlife, searchTerm
+        searchTerm,
+        nightlife: nightlifeCheck,
+        food: foodCheck,
+        activities: activitiesCheck,
+      };
+      const { data } = await axios.post(`${API_URL}/api/cities`, payload, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      console.log(data);
+      const { foodResults, nightlifeResults, activitiesResults } = data;
+      setFoodData(foodResults);
+      setNightlifeData(nightlifeResults);
+      setActivitiesData(activitiesResults);
+      setShowResults(true);
+      setLoading(false);
+
+      console.log(foodData, nightlifeData, activitiesData);
+    } catch (error) {
       setError(`Login failed - ${error.message}`);
-    }}
+    }
+  };
+
+  // modal functionality
+  const showModal = () => {
+    setModalVisible(true);
+  };
+  const handleOk = (e) => {
+    console.log(e);
+    setModalVisible(false);
+  };
+  const handleCancel = (e) => {
+    console.log(e);
+    setModalVisible(false);
+  };
 
   return (
     <div>
@@ -133,16 +172,20 @@ const Dashboard = () => {
               }}
             >
               <Form style={{ textAlign: "center" }} onFinish={handleFormSubmit}>
-                <Form.Item label="Input" name="searchTerm" rules={[
-          {
-            required: true,
-            message: "Please input a destination",
-          },
-        ]}>
-                  <Input style={{borderRadius: "25px"}}/>
+                <Form.Item
+                  label="Search City"
+                  name="searchTerm"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input a destination",
+                    },
+                  ]}
+                >
+                  <Input style={{ borderRadius: "25px" }} />
                 </Form.Item>
                 <div style={{ display: "inline-block" }}>
-                  <Form.Item label="Nightlife" name="nightlife">
+                  <Form.Item label="Nightlife">
                     <Switch
                       style={{ color: "red" }}
                       checkedChildren={
@@ -163,13 +206,12 @@ const Dashboard = () => {
                           }}
                         />
                       }
-                      defaultUnChecked
-                      // onChange={handleFoodChecker}
+                      onChange={handleNightlifeSwitch}
                     />
                   </Form.Item>
                 </div>
                 <div style={{ display: "inline-block" }}>
-                  <Form.Item label="Daytime" name="activities" style={{ marginLeft: "20px" }}>
+                  <Form.Item label="Daytime" style={{ marginLeft: "20px" }}>
                     <Switch
                       style={{ color: "red" }}
                       checkedChildren={
@@ -190,16 +232,16 @@ const Dashboard = () => {
                           }}
                         />
                       }
-                      defaultUnChecked
+                      onChange={handleActivitiesSwitch}
                     />
                   </Form.Item>
                 </div>
                 <div style={{ display: "inline-block" }}>
-                  <Form.Item label="Food" name="food" style={{ marginLeft: "20px" }}>
+                  <Form.Item label="Food" style={{ marginLeft: "20px" }}>
                     <Switch
-                    id="Food"
+                      id="Food"
                       style={{ color: "red" }}
-                      onChange={handleSwitch}
+                      onChange={handleFoodSwitch}
                       checkedChildren={
                         <CheckOutlined
                           style={{
@@ -218,19 +260,20 @@ const Dashboard = () => {
                           }}
                         />
                       }
-                      defaultUnChecked
                     />
                   </Form.Item>
                 </div>
                 <Form.Item>
-                <Button
-          shape="round"
-          style={{ width: "120px" }}
-          size="large"
-          danger
-          type="primary"
-          htmlType="submit"
-        >Search</Button>
+                  <Button
+                    shape="round"
+                    style={{ width: "120px" }}
+                    size="large"
+                    danger
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Search
+                  </Button>
                 </Form.Item>
               </Form>
             </Card>
@@ -245,60 +288,193 @@ const Dashboard = () => {
           }}
         >
           <Collapse defaultActiveKey={["1"]} onChange={callback}>
-            <Panel header="This is panel header 1" key="1">
-              <p>{text}</p>
-            </Panel>
-            {/* <Panel header="This is panel header 2" key="2">
-              <List
-                itemLayout="vertical"
-                size="large"
-                pagination={{
-                  onChange: (page) => {
-                    console.log(page);
-                  },
-                  pageSize: 3,
-                }}
-                dataSource={test}
-                renderItem={(item) => (
-                  <List.Item
-                    key={item.title}
-                    actions={[
-                      <IconText
-                        icon={StarOutlined}
-                        text="156"
-                        key="list-vertical-star-o"
-                      />,
-                      <IconText
-                        icon={LikeOutlined}
-                        text="156"
-                        key="list-vertical-like-o"
-                      />,
-                      <IconText
-                        icon={MessageOutlined}
-                        text="2"
-                        key="list-vertical-message"
-                      />,
-                    ]}
-                    extra={
-                      <img
-                        width={272}
-                        alt="logo"
-                        src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+            <Panel header="Food list" key="1" style={{ minWidth: "1000px" }}>
+              {foodData ? (
+                <List
+                  itemLayout="vertical"
+                  size="large"
+                  pagination={{
+                    onChange: (page) => {
+                      console.log(page);
+                    },
+                    pageSize: 4,
+                  }}
+                  dataSource={foodData}
+                  renderItem={(item) => (
+                    <List.Item
+                      key={item.name}
+                      actions={[
+                        <div>
+                          <Button type="primary" onClick={showModal}>
+                            <IconText
+                              icon={StarOutlined}
+                              text="Save to plan"
+                              key="list-vertical-star-o"
+                            />
+                          </Button>
+                          <Modal
+                            title="Basic Modal"
+                            visible={modalVisible}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                          >
+                            <Form
+                              name="newPlan"
+                              layout="inline"
+                              onFinish={console.log("form submit")}
+                              initialValues={{
+                                price: {
+                                  planName: "",
+                                },
+                              }}
+                            >
+                              <Form.Item
+                                name="planName"
+                                rules={
+                                  [
+                                    // {
+                                    //   validator: checkPrice,
+                                    // },
+                                  ]
+                                }
+                              >
+                                <Input placeholder="New Plan?" />
+                              </Form.Item>
+                              <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                  Submit
+                                </Button>
+                              </Form.Item>
+                            </Form>
+                            <p>existing plan</p>
+                            <p>Some contents...</p>
+                          </Modal>
+                        </div>,
+                        <IconText
+                          icon={LikeOutlined}
+                          text="156"
+                          key="list-vertical-like-o"
+                        />,
+                        <IconText
+                          icon={MessageOutlined}
+                          text="2"
+                          key="list-vertical-message"
+                        />,
+                      ]}
+                      extra={
+                        <img
+                          style={{ height: "200px", width: "300px" }}
+                          alt="logo"
+                          src={item.photo}
+                        />
+                      }
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar src={item.icon} />}
+                        title={<a href={item.name}>{item.name}</a>}
+                        description={item.address}
                       />
-                    }
-                  >
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.avatar} />}
-                      title={<a href={item.href}>{item.title}</a>}
-                      description={item.description}
-                    />
-                    {item.content}
-                  </List.Item>
-                )}
-              />
-            </Panel> */}
-            <Panel header="This is panel header 3" key="3" disabled>
-              <p>{text}</p>
+                      {item.type}, input detail api call here
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <p>No data</p>
+              )}
+            </Panel>
+            <Panel header="Activities List" key="2">
+              {activitiesData ? (
+                <List
+                  itemLayout="vertical"
+                  size="large"
+                  pagination={{
+                    onChange: (page) => {
+                      console.log(page);
+                    },
+                    pageSize: 4,
+                  }}
+                  dataSource={activitiesData}
+                  renderItem={(item) => (
+                    <List.Item
+                      key={item.name}
+                      actions={[
+                        <IconText
+                          icon={StarOutlined}
+                          text="156"
+                          key="list-vertical-star-o"
+                        />,
+                        <IconText
+                          icon={LikeOutlined}
+                          text="156"
+                          key="list-vertical-like-o"
+                        />,
+                        <IconText
+                          icon={MessageOutlined}
+                          text="2"
+                          key="list-vertical-message"
+                        />,
+                      ]}
+                      extra={<img width={272} alt="logo" src={item.photo} />}
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar src={null} />}
+                        title={<a href={item.name}>{item.name}</a>}
+                        description={item.address}
+                      />
+                      {item.type}
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <p>No data</p>
+              )}
+            </Panel>
+            <Panel header="Nightlife list" key="3">
+              {nightlifeData ? (
+                <List
+                  itemLayout="vertical"
+                  size="large"
+                  pagination={{
+                    onChange: (page) => {
+                      console.log(page);
+                    },
+                    pageSize: 4,
+                  }}
+                  dataSource={nightlifeData}
+                  renderItem={(item) => (
+                    <List.Item
+                      key={item.name}
+                      actions={[
+                        <IconText
+                          icon={StarOutlined}
+                          text="156"
+                          key="list-vertical-star-o"
+                        />,
+                        <IconText
+                          icon={LikeOutlined}
+                          text="156"
+                          key="list-vertical-like-o"
+                        />,
+                        <IconText
+                          icon={MessageOutlined}
+                          text="2"
+                          key="list-vertical-message"
+                        />,
+                      ]}
+                      extra={<img width={272} alt="logo" src={item.photo} />}
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar src={null} />}
+                        title={<a href={item.name}>{item.name}</a>}
+                        description={item.address}
+                      />
+                      {item.type}
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <p>No data</p>
+              )}
             </Panel>
           </Collapse>
         </Row>
