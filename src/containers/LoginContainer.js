@@ -55,15 +55,16 @@ const LoginContainer = () => {
     <Card
       title={showLogin ? "Log In" : "Sign Up"}
       headStyle={{
-        backgroundColor: "#FAFAFA",
+
         color: "red",
         paddingLeft: "80px",
         fontSize: "30px",
+
       }}
       bordered={false}
       style={{
         width: 500,
-        boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)",
+        boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)", borderRadius: "20px"
       }}
       extra={
         <Button

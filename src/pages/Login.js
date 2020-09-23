@@ -7,17 +7,21 @@ import palmTree from "../assets/palmTree.jpg";
 
 const Login = () => {
   const ImageColumn = () => (
-    <Col span={12}>
-      <Image
-        src={palmTree}
+    <Col
+        span={12}
         style={{
-          minHeight: "100vh",
-          objectFit: "cover",
-          backgroundSize: "50% 100%",
-          height: "100%"
+          margin: "auto",
+          height: "60%",
+          width: "50%",
+          paddingTop: "100px",
+          verticalAlign: "middle",
+          textAlign: "center",
         }}
-      />
-    </Col>
+      >
+        <h1 style={{ color: "white", textShadow: "2px 2px #FF4D4F" }}>
+          Holiday Planner
+        </h1>
+      </Col>
   );
 
   const FormColumn = () => (
@@ -37,7 +41,12 @@ const Login = () => {
   );
 
   return (
-    <Row>
+    <Row style={{
+      minHeight: "93.5vh",
+      backgroundRepeat: "no-repeat",
+      backgroundImage: `url(${palmTree})`,
+      backgroundSize: "50% 100%",
+    }}>
       <ImageColumn />
       <FormColumn />
     </Row>

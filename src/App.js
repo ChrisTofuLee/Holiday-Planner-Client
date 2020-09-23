@@ -19,14 +19,17 @@ const App = () => {
     <HashRouter>
       <Layout>
         <UserContext.Provider value={{ user, setUser }}>
-          <Header style={{ padding: 0 }}>
+        <div>
+          <Header style={{ padding: 0, height: "6.5vh"}}>
             <NavBar />
           </Header>
           <Content>
             <Routes />
           </Content>
+          </div>
         </UserContext.Provider>
-        <Footer>Footer</Footer>
+        <Footer style={{position: "fixed",
+  bottom: "0", width: "100%", opacity: "50%"}}>Footer</Footer>
       </Layout>
     </HashRouter>
   );

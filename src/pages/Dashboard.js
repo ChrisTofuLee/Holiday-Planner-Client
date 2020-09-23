@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import SaveModal from "../components/SaveModal";
 import InfiniteScroll from "react-infinite-scroller";
 import {
   Col,
@@ -19,6 +20,7 @@ import {
   Comment,
   Spin,
   Tag,
+  Skeleton,
 } from "antd";
 import {
   CloseOutlined,
@@ -68,8 +70,6 @@ const Dashboard = () => {
   const [failSave, setFailSave] = useState(false);
   const [failPlanSave, setFailPlanSave] = useState(false);
 
-
-
   //should be a way to extract true or false from switch without function as it's in a form.item?
   const handleFoodSwitch = (checked) => {
     setFoodCheck(checked);
@@ -90,6 +90,7 @@ const Dashboard = () => {
     } else {
       try {
         setRequiredSwitch(false);
+        setShowResults(true);
         setLoading(true);
         const payload = {
           // activities, food, nightlife, searchTerm
@@ -108,7 +109,7 @@ const Dashboard = () => {
         setFoodData(foodResults);
         setNightlifeData(nightlifeResults);
         setActivitiesData(activitiesResults);
-        setShowResults(true);
+
         setLoading(false);
 
         console.log(foodData);
@@ -207,49 +208,48 @@ const Dashboard = () => {
     const { id } = event.target;
     console.log("event", id);
     console.log("saved plan");
-      const placeChecker = (googleId) => {
-          const planToCheck = savedPlans.find(
-            (plans) => plans._id === id
-          );
-          const placeById = planToCheck.places.find(
-            (place) => place.googlePlacesId === googleId
-          )
-          console.log(placeById, googleId, savedPlans);
-          return placeById || null;
-        };
+    const placeChecker = (googleId) => {
+      const planToCheck = savedPlans.find((plans) => plans._id === id);
+      const placeById = planToCheck.places.find(
+        (place) => place.googlePlacesId === googleId
+      );
+      console.log(placeById, googleId, savedPlans);
+      return placeById || null;
+    };
 
-        if (placeChecker(googleId, savedPlans) === null) {
-    const data = await axios.put(
-      `${API_URL}/api/plans/${id}/addPlace`,
-      dataToInject,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
-    console.log("injected Data", data);
-    setFailPlanSave(false);
-    setModalVisibleSave(false);
-  } else {
-    setFailPlanSave(true);
-    showSaveModal();}
+    if (placeChecker(googleId, savedPlans) === null) {
+      const data = await axios.put(
+        `${API_URL}/api/plans/${id}/addPlace`,
+        dataToInject,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      console.log("injected Data", data);
+      setFailPlanSave(false);
+      setModalVisibleSave(false);
+    } else {
+      setFailPlanSave(true);
+      showSaveModal();
+    }
   };
 
   const deletePlan = async (event) => {
     event.preventDefault();
     const { id } = event.target;
-    console.log(id)
+    console.log(id);
     const data = await axios.delete(`${API_URL}/api/plans/${id}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     });
-    showSaveModal()
+    showSaveModal();
   };
 
   return (
-    <div>
+    <div style={{backgroundColor: "white"}}>
       <div
         style={{
           backgroundImage: `url(${seaside})`,
@@ -261,25 +261,50 @@ const Dashboard = () => {
       ></div>
       <div
         style={{
-          marginTop: "-400px",
+          marginTop: "-450px",
           marginRight: "200px",
           marginLeft: "200px",
-          backgroundColor: "rgba(250,250,250,.48)",
+          // backgroundColor: "rgba(250,250,250,.48)",
+          position: "relative",
         }}
       >
-        <Row>
-          <Col span={12}>
-            <Title level={2}>Discover what you can do on your next trip</Title>
-            <Text>
-              Find activities and points of interest to inspire an itinerary for
-              your next trip
-            </Text>
+        <Row
+          style={{
+            paddingTop: "50px",
+            paddingLeft: "50px",
+            paddingBottom: "50px",
+          }}
+        >
+          <Col
+            span={12}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ width: "80%", overflow: "visible" }}>
+              <Title level={2} strong style={{color: "white", fontSize: "40px", textShadow: "2px 2px #FF4D4F"}}>
+                Discover what you can do on your next trip
+              </Title>
+              <Text strong style={{color: "white", fontSize: "20px", textShadow: "2px 2px #FF4D4F"}}>
+                Find activities and points of interest to inspire an itinerary
+                for your next trip
+              </Text>
+            </div>
           </Col>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Card
               title="Search for a city"
               headStyle={{
-                backgroundColor: "#FAFAFA",
+                
                 color: "red",
                 fontSize: "30px",
                 textAlign: "center",
@@ -287,7 +312,7 @@ const Dashboard = () => {
               bordered={false}
               style={{
                 width: 500,
-                boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)",
+                boxShadow: "0 2px 6px rgba(120,111,120,.48)", borderRadius: "20px", padding: "20px"
               }}
             >
               <Form style={{ textAlign: "center" }} onFinish={handleFormSubmit}>
@@ -409,16 +434,27 @@ const Dashboard = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            paddingBottom: "100px",
           }}
         >
-          {loading ? (
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-            />
-          ) : (
-            <Collapse defaultActiveKey={["1"]} onChange={callback}>
-              <Panel header="Food list" key="1" style={{ minWidth: "1000px" }}>
-                {foodData ? (
+          {!showResults ? null : (
+            <Collapse
+              defaultActiveKey={["1", "2", "3"]}
+              onChange={callback}
+              style={{ marginTop: "20px", marginBottom: "50px", boxShadow: "0 2px 6px rgba(120,111,120,.48)", borderRadius: "20px" }}
+            >
+              <Panel
+                header="Food list"
+                key="1"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
+              >
+                {loading ? (
+                  <div>
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                  </div>
+                ) : (
                   <List
                     itemLayout="vertical"
                     size="large"
@@ -467,6 +503,7 @@ const Dashboard = () => {
                               onCancel={handleModalSaveCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
                               okButtonProps={{ danger: true, shape: "round" }}
+                              style={{borderRadius: "20px", padding: "15px"}}
                             >
                               <Form
                                 name="newPlan"
@@ -577,6 +614,157 @@ const Dashboard = () => {
                                 </div>
                               )}
                             </Modal>
+                            {/* <SaveModal modalVisibleSave = {modalVisibleSave}
+  handleModalSaveOk = {handleModalSaveOk}
+  handleModalSaveCancel = {handleModalSaveCancel}
+  saveNewPlan = {saveNewPlan}
+  failSave = {failSave}
+  failPlanSave = {failPlanSave}
+  savedPlans = {savedPlans}
+  saveToPlan = {saveToPlan}
+  item = {item}
+  deletePlan = {deletePlan} /> */}
+                          </div>,
+                          <div>
+                            <Button
+                              type="primary"
+                              onClick={showModalViewMore}
+                              danger
+                              shape="round"
+                            >
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                              >
+                                <SearchOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                View More Info
+                              </div>
+                            </Button>
+                            <Modal
+                              title="Latest Reviews"
+                              visible={modalVisibleViewMore}
+                              onOk={handleModalViewMoreOk}
+                              onCancel={handleModalViewMoreCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{ danger: true, shape: "round" }}
+                              style={{borderRadius: "20px", padding: "15px"}}
+                            >
+                              <div
+                                style={{
+                                  height: "600px",
+                                  overflow: "scroll",
+                                  overflowX: "hidden",
+                                  width: "auto",
+                                  paddingRight: "30px",
+                                }}
+                              >
+                                {item.review.map((rev) => (
+                                  <Comment
+                                    author={rev.author_name}
+                                    avatar={
+                                      <Avatar
+                                        src={rev.profile_photo_url}
+                                        alt={rev.author_name}
+                                      />
+                                    }
+                                    content={<p>{rev.text}</p>}
+                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                  >
+                                    <Divider />
+                                  </Comment>
+                                ))}
+                              </div>
+                            </Modal>
+                          </div>,
+                        ]}
+                        extra={
+                          <img
+                            style={{ height: "200px", width: "300px" }}
+                            alt="logo"
+                            src={item.photo}
+                          />
+                        }
+                      >
+                        <List.Item.Meta
+                          avatar={<Avatar src={item.icon} />}
+                          title={
+                            <a
+                              href={item.siteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {item.name}
+                            </a>
+                          }
+                          description={item.address}
+                        />
+                        Opening Times:{" "}
+                        {item.openingTimes.map((time) => `${time}, `)}
+                      </List.Item>
+                    )}
+                  />
+                )}
+              </Panel>
+              <Panel
+                header="Activities list"
+                key="1"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
+              >
+                {loading ? (
+                  <div>
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                  </div>
+                ) : (
+                  <List
+                    itemLayout="vertical"
+                    size="large"
+                    pagination={{
+                      onChange: (page) => {
+                        console.log(page);
+                      },
+                      pageSize: 4,
+                    }}
+                    dataSource={activitiesData}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={item.name}
+                        actions={[
+                          <div>
+                            <Button
+                              type="primary"
+                              onClick={showSaveModal}
+                              danger
+                              shape="round"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                              >
+                                <StarOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                Save to plan
+                              </div>
+                            </Button>
                           </div>,
                           <div>
                             <Button
@@ -636,7 +824,15 @@ const Dashboard = () => {
                       >
                         <List.Item.Meta
                           avatar={<Avatar src={item.icon} />}
-                          title={<a href={item.siteUrl}>{item.name}</a>}
+                          title={
+                            <a
+                              href={item.siteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {item.name}
+                            </a>
+                          }
                           description={item.address}
                         />
                         Opening Times:{" "}
@@ -644,205 +840,107 @@ const Dashboard = () => {
                       </List.Item>
                     )}
                   />
-                ) : (
-                  <p>No data</p>
-                )}
-              </Panel>
-              <Panel
-                header="Activities list"
-                key="2"
-                style={{ minWidth: "1000px" }}
-              >
-                {activitiesData ? (
-                  <List
-                    itemLayout="vertical"
-                    size="large"
-                    pagination={
-                      activitiesData
-                        ? {
-                            onChange: (page) => {
-                              console.log(page);
-                            },
-                            pageSize: 4,
-                          }
-                        : false
-                    }
-                    dataSource={activitiesData}
-                    renderItem={(item) => (
-                      <List.Item
-                        key={item.name}
-                        actions={[
-                          <div>
-                            <Button type="primary" onClick={showSaveModal}>
-                              <IconText
-                                icon={StarOutlined}
-                                text="Save to plan"
-                                key="list-vertical-star-o"
-                              />
-                            </Button>
-                            <Modal
-                              title="Basic Modal"
-                              visible={modalVisibleSave}
-                              onOk={handleModalSaveOk}
-                              onCancel={handleModalSaveCancel}
-                            >
-                              <Form
-                                name="newPlan"
-                                layout="inline"
-                                onFinish={console.log("form submit")}
-                                initialValues={{
-                                  price: {
-                                    planName: "",
-                                  },
-                                }}
-                              >
-                                <Form.Item
-                                  name="planName"
-                                  rules={
-                                    [
-                                      // {
-                                      //   validator: checkPrice,
-                                      // },
-                                    ]
-                                  }
-                                >
-                                  <Input placeholder="New Plan?" />
-                                </Form.Item>
-                                <Form.Item>
-                                  <Button type="primary" htmlType="submit">
-                                    Submit
-                                  </Button>
-                                </Form.Item>
-                              </Form>
-                              <p>existing plan</p>
-                              <p>Some contents...</p>
-                            </Modal>
-                          </div>,
-                          <div>
-                            <Button type="primary" onClick={showModalViewMore}>
-                              <IconText
-                                icon={SearchOutlined}
-                                text="Latest Reviews"
-                                key="list-vertical-message"
-                              />
-                            </Button>
-                            <Modal
-                              title="Basic Modal"
-                              visible={modalVisibleViewMore}
-                              onOk={handleModalViewMoreOk}
-                            >
-                              <p>existing plan</p>
-                              <p>Some contents...</p>
-                            </Modal>
-                          </div>,
-                        ]}
-                        extra={
-                          <img
-                            style={{ height: "200px", width: "300px" }}
-                            alt="logo"
-                            src={item.photo}
-                          />
-                        }
-                      >
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.icon} />}
-                          title={<a href={item.name}>{item.name}</a>}
-                          description={item.address}
-                        />
-                        {item.type}, input detail api call here
-                      </List.Item>
-                    )}
-                  />
-                ) : (
-                  <p>No data</p>
                 )}
               </Panel>
               <Panel
                 header="Nightlife list"
-                key="3"
-                style={{ minWidth: "1000px" }}
+                key="1"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
               >
-                {nightlifeData ? (
+                {loading ? (
+                  <div>
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                  </div>
+                ) : (
                   <List
                     itemLayout="vertical"
                     size="large"
-                    pagination={
-                      nightlifeData
-                        ? {
-                            onChange: (page) => {
-                              console.log(page);
-                            },
-                            pageSize: 4,
-                          }
-                        : false
-                    }
+                    pagination={{
+                      onChange: (page) => {
+                        console.log(page);
+                      },
+                      pageSize: 4,
+                    }}
                     dataSource={nightlifeData}
                     renderItem={(item) => (
                       <List.Item
                         key={item.name}
                         actions={[
                           <div>
-                            <Button type="primary" onClick={showSaveModal}>
-                              <IconText
-                                icon={StarOutlined}
-                                text="Save to plan"
-                                key="list-vertical-star-o"
-                              />
-                            </Button>
-                            <Modal
-                              title="Basic Modal"
-                              visible={modalVisibleSave}
-                              onOk={handleModalSaveOk}
-                              onCancel={handleModalSaveCancel}
+                            <Button
+                              type="primary"
+                              onClick={showSaveModal}
+                              danger
+                              shape="round"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
                             >
-                              <Form
-                                name="newPlan"
-                                layout="inline"
-                                onFinish={console.log("form submit")}
-                                initialValues={{
-                                  price: {
-                                    planName: "",
-                                  },
-                                }}
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
                               >
-                                <Form.Item
-                                  name="planName"
-                                  rules={
-                                    [
-                                      // {
-                                      //   validator: checkPrice,
-                                      // },
-                                    ]
-                                  }
-                                >
-                                  <Input placeholder="New Plan?" />
-                                </Form.Item>
-                                <Form.Item>
-                                  <Button type="primary" htmlType="submit">
-                                    Submit
-                                  </Button>
-                                </Form.Item>
-                              </Form>
-                              <p>existing plan</p>
-                              <p>Some contents...</p>
-                            </Modal>
+                                <StarOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                Save to plan
+                              </div>
+                            </Button>
                           </div>,
                           <div>
-                            <Button type="primary" onClick={showModalViewMore}>
-                              <IconText
-                                icon={SearchOutlined}
-                                text="View More Info"
-                                key="list-vertical-message"
-                              />
+                            <Button
+                              type="primary"
+                              onClick={showModalViewMore}
+                              danger
+                              shape="round"
+                            >
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                              >
+                                <SearchOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                View More Info
+                              </div>
                             </Button>
                             <Modal
-                              title="Basic Modal"
+                              title="Latest Reviews"
                               visible={modalVisibleViewMore}
                               onOk={handleModalViewMoreOk}
                               onCancel={handleModalViewMoreCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{ danger: true, shape: "round" }}
                             >
-                              <p>existing plan</p>
-                              <p>Some contents...</p>
+                              {item.review.map((rev) => (
+                                <Comment
+                                  author={rev.author_name}
+                                  avatar={
+                                    <Avatar
+                                      src={rev.profile_photo_url}
+                                      alt={rev.author_name}
+                                    />
+                                  }
+                                  content={<p>{rev.text}</p>}
+                                  datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                >
+                                  <Divider />
+                                </Comment>
+                              ))}
                             </Modal>
                           </div>,
                         ]}
@@ -853,18 +951,26 @@ const Dashboard = () => {
                             src={item.photo}
                           />
                         }
+                        
                       >
                         <List.Item.Meta
                           avatar={<Avatar src={item.icon} />}
-                          title={<a href={item.name}>{item.name}</a>}
+                          title={
+                            <a
+                              href={item.siteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {item.name}
+                            </a>
+                          }
                           description={item.address}
                         />
-                        {item.type}, input detail api call here
+                        Opening Times:{" "}
+                        {item.openingTimes.map((time) => `${time}, `)}
                       </List.Item>
                     )}
                   />
-                ) : (
-                  <p>No data</p>
                 )}
               </Panel>
               {/* <Panel header="Activities List" key="2">

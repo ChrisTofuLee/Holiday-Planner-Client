@@ -12,7 +12,7 @@ const NavBar = () => {
     return <ProtectedRoutes />;
   }
   return (
-    // style={{height: "10vh"}}
+
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="app">
         <NavLink to="/">
