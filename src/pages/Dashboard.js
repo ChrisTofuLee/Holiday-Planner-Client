@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import SaveModal from "../components/SaveModal";
-import InfiniteScroll from "react-infinite-scroller";
 import {
   Col,
   Row,
@@ -249,7 +248,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{backgroundColor: "white"}}>
+    <div style={{ backgroundColor: "white" }}>
       <div
         style={{
           backgroundImage: `url(${seaside})`,
@@ -284,10 +283,25 @@ const Dashboard = () => {
             }}
           >
             <div style={{ width: "80%", overflow: "visible" }}>
-              <Title level={2} strong style={{color: "white", fontSize: "40px", textShadow: "2px 2px #FF4D4F"}}>
+              <Title
+                level={2}
+                strong
+                style={{
+                  color: "white",
+                  fontSize: "40px",
+                  textShadow: "2px 2px #FF4D4F",
+                }}
+              >
                 Discover what you can do on your next trip
               </Title>
-              <Text strong style={{color: "white", fontSize: "20px", textShadow: "2px 2px #FF4D4F"}}>
+              <Text
+                strong
+                style={{
+                  color: "white",
+                  fontSize: "20px",
+                  textShadow: "2px 2px #FF4D4F",
+                }}
+              >
                 Find activities and points of interest to inspire an itinerary
                 for your next trip
               </Text>
@@ -304,7 +318,6 @@ const Dashboard = () => {
             <Card
               title="Search for a city"
               headStyle={{
-                
                 color: "red",
                 fontSize: "30px",
                 textAlign: "center",
@@ -312,7 +325,9 @@ const Dashboard = () => {
               bordered={false}
               style={{
                 width: 500,
-                boxShadow: "0 2px 6px rgba(120,111,120,.48)", borderRadius: "20px", padding: "20px"
+                boxShadow: "0 2px 6px rgba(120,111,120,.48)",
+                borderRadius: "20px",
+                padding: "20px",
               }}
             >
               <Form style={{ textAlign: "center" }} onFinish={handleFormSubmit}>
@@ -326,7 +341,7 @@ const Dashboard = () => {
                     },
                   ]}
                 >
-                  <Input style={{ borderRadius: "25px" }} />
+                  <Input style={{ borderRadius: "25px", borderColor: "red" }} />
                 </Form.Item>
                 {requiredSwitch ? (
                   <div style={{ color: "red" }}>Please select one.</div>
@@ -415,9 +430,12 @@ const Dashboard = () => {
                 <Form.Item>
                   <Button
                     shape="round"
-                    style={{ width: "120px" }}
+                    style={{
+                      width: "120px",
+                      background:
+                        "linear-gradient(135deg, rgb(255,0,0) 0%, rgb(247,205,105) 100%)",
+                    }}
                     size="large"
-                    danger
                     type="primary"
                     htmlType="submit"
                   >
@@ -441,12 +459,17 @@ const Dashboard = () => {
             <Collapse
               defaultActiveKey={["1", "2", "3"]}
               onChange={callback}
-              style={{ marginTop: "20px", marginBottom: "50px", boxShadow: "0 2px 6px rgba(120,111,120,.48)", borderRadius: "20px" }}
+              style={{
+                marginTop: "20px",
+                marginBottom: "50px",
+                boxShadow: "0 2px 6px rgba(120,111,120,.48)",
+                borderRadius: "20px",
+              }}
             >
               <Panel
                 header="Food list"
                 key="1"
-                style={{ minWidth: "1000px", maxWidth: "1000px" }}
+                style={{ minWidth: "1000px", maxWidth: "1000px", }}
               >
                 {loading ? (
                   <div>
@@ -473,12 +496,13 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showSaveModal}
-                              danger
                               shape="round"
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
                               }}
                             >
                               <div
@@ -502,8 +526,14 @@ const Dashboard = () => {
                               onOk={handleModalSaveOk}
                               onCancel={handleModalSaveCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round" }}
-                              style={{borderRadius: "20px", padding: "15px"}}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+
+                              style={{ borderRadius: "20px", padding: "15px" }}
                             >
                               <Form
                                 name="newPlan"
@@ -537,7 +567,7 @@ const Dashboard = () => {
                                   <Button
                                     type="primary"
                                     htmlType="submit"
-                                    danger
+                                    style={{background: "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
                                     shape="round"
                                   >
                                     Save
@@ -629,7 +659,8 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showModalViewMore}
-                              danger
+                              style={{background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
                               shape="round"
                             >
                               <div
@@ -653,8 +684,9 @@ const Dashboard = () => {
                               onOk={handleModalViewMoreOk}
                               onCancel={handleModalViewMoreCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round" }}
-                              style={{borderRadius: "20px", padding: "15px"}}
+                              okButtonProps={{ danger: true, shape: "round", background:
+                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
+                              style={{ borderRadius: "20px", padding: "15px" }}
                             >
                               <div
                                 style={{
@@ -748,6 +780,8 @@ const Dashboard = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"
                               }}
                             >
                               <div
@@ -770,7 +804,8 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showModalViewMore}
-                              danger
+                              style={{background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
                               shape="round"
                             >
                               <div
@@ -794,7 +829,8 @@ const Dashboard = () => {
                               onOk={handleModalViewMoreOk}
                               onCancel={handleModalViewMoreCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round" }}
+                              okButtonProps={{ danger: true, shape: "round", background:
+                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)" }}
                             >
                               {item.review.map((rev) => (
                                 <Comment
@@ -872,12 +908,14 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showSaveModal}
-                              danger
+                              
                               shape="round"
                               style={{
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
+                                background:
+                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"
                               }}
                             >
                               <div
@@ -900,7 +938,8 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showModalViewMore}
-                              danger
+                              style={{background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
                               shape="round"
                             >
                               <div
@@ -924,7 +963,8 @@ const Dashboard = () => {
                               onOk={handleModalViewMoreOk}
                               onCancel={handleModalViewMoreCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round" }}
+                              okButtonProps={{ danger: true, shape: "round", background:
+                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
                             >
                               {item.review.map((rev) => (
                                 <Comment
@@ -951,7 +991,6 @@ const Dashboard = () => {
                             src={item.photo}
                           />
                         }
-                        
                       >
                         <List.Item.Meta
                           avatar={<Avatar src={item.icon} />}

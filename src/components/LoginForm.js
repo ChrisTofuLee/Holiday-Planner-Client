@@ -26,7 +26,7 @@ const LoginForm = ({ onSubmit, error }) => {
         ]}
         style={{ width: "90%", padding: "10px 0px" }}
       >
-        <Input placeholder="the.one@example.com" />
+        <Input style={{ borderRadius: "25px", borderColor: "red" }} placeholder="the.one@example.com" />
       </Form.Item>
       <Form.Item
         label="Password"
@@ -39,7 +39,7 @@ const LoginForm = ({ onSubmit, error }) => {
         ]}
         style={{ width: "90%", padding: "10px 0px" }}
       >
-        <Input.Password placeholder="*******" />
+        <Input.Password style={{ borderRadius: "25px", borderColor: "red" }} placeholder="*******" />
       </Form.Item>
       <Form.Item
         style={{
@@ -49,7 +49,7 @@ const LoginForm = ({ onSubmit, error }) => {
       >
         <Button
           shape="round"
-          style={{ width: "120px" }}
+          style={{ width: "120px", background: "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(253, 160, 133) 100%)" }}
           size="large"
           danger
           type="primary"
