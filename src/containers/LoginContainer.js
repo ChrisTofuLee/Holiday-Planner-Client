@@ -6,7 +6,7 @@ import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 import UserContext from "../context/UserContext";
 
-const API_URL = process.env.API_URL || "http://localhost:8000";
+const API_URL = process.env.API_URL || "http://localhost:8001";
 
 const LoginContainer = () => {
   const [showLogin, setShowLogIn] = useState(true);
@@ -26,6 +26,8 @@ const LoginContainer = () => {
       });
 
       const { token } = data;
+      const user = { email, token }
+      localStorage.setItem("user", JSON.stringify(user))
 // change destructured email & token to data if you want to include 'displayName'
       setUser({ email, token });
     } catch (error) {

@@ -11,8 +11,10 @@ import "./App.css";
 const { Header, Footer, Content } = Layout;
 
 const App = () => {
-  const [user, setUser] = useState({});
-
+  const localUser = localStorage.getItem("user");
+  const parsedLocalUser = JSON.parse(localUser);
+  const [user, setUser] = useState(parsedLocalUser || {});
+  
   return (
     <HashRouter>
       <Layout>
