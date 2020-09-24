@@ -8,3 +8,6 @@
 .ant-modal-title {
   color: red !important;
 }
+.ant-btn-primary {
+  border-color: #DAD7DA !important;
+}

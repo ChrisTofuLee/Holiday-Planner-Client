@@ -434,6 +434,7 @@ const Dashboard = () => {
                       width: "120px",
                       background:
                         "linear-gradient(135deg, rgb(255,0,0) 0%, rgb(247,205,105) 100%)",
+
                     }}
                     size="large"
                     type="primary"
