@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useTransition, useSpring, useChain, config } from "react-spring";
-import { Global, Container, Item } from "./planStyles";
+import { Container, Item } from "../pages/planStyles";
 
-const PlanBox = () => {
-
-    // Build a spring and catch its ref
+const PlanBox = ({ plan }) => {
+  console.log("here", plan);
+  const [open, set] = useState(false);
+  // Build a spring and catch its ref
   const springRef = useRef();
   const { size, opacity, ...rest } = useSpring({
     ref: springRef,
@@ -14,29 +15,38 @@ const PlanBox = () => {
   });
   // Build a transition and catch its ref
   const transRef = useRef();
-  const transitions = useTransition(open ? savedPlans[1].places : [], (place) => place.name,{
-    trail: 400 / savedPlans.length,
-    from: { opacity: 0, transform: 'scale(0)' },
-    enter: { opacity: 1, transform: 'scale(1)' },
-    leave: { opacity: 0, transform: 'scale(0)' }
-  });
-
+  const transitions = useTransition(
+    open ? plan.places : [],
+    (place) => {
+      return place._id;
+    },
+    {
+      trail: 400 / plan.places.length,
+      from: { opacity: 0, transform: "scale(0)" },
+      enter: { opacity: 1, transform: "scale(1)" },
+      leave: { opacity: 0, transform: "scale(0)" },
+    }
+  );
 
   useChain(open ? [springRef, transRef] : [transRef, springRef], [
     0,
     open ? 0.1 : 0.6,
   ]);
 
-  const testClick = (item, index) => {
-    console.log("hihihihih", item, "i", index);}
-    return (<Container
-        style={{ ...rest, width: size, height: size, margin: "0 auto" }}
-        onClick={() => set((open) => !open)}
-      >
-        <p>title</p>
-        {transitions.map(({ item, props, key }) => (
+  return (
+    <Container
+      style={{ ...rest, width: size, height: size, margin: "0 auto" }}
+      onClick={() => set((open) => !open)}
+    >
+      <p>{plan.title}</p>
+      {transitions.map(({ item, props, key }, index) => {
+        if (!open) {
+          return null;
+        }
+        console.log(item)
+        return (
           <Item
-            key={key}
+            key={item._id + index}
             style={{
               ...props,
 
@@ -45,12 +55,13 @@ const PlanBox = () => {
               background:
                 "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(253, 160, 133) 100%)",
             }}
-            onClick={testClick(item, key)}
           >
-            <p style={{textAlign: "center"}}>{item.name}</p>
+            <p style={{ textAlign: "center" }}>{item.name}</p>
           </Item>
-        ))}
-      </Container>)
-}
+        );
+      })}
+    </Container>
+  );
+};
 
-export default PlanBox
+export default PlanBox;

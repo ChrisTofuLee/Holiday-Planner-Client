@@ -5,6 +5,7 @@ import UserContext from "./context/UserContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Plans from "./pages/Plans";
+import PlansSingleWorking from "./pages/PlansSingleWorking";
 
 const Routes = () => {
   const { user } = useContext(UserContext);

@@ -9,7 +9,7 @@ import mountain from "../assets/mountains.jpg";
 
 const API_URL = process.env.API_URL || "http://localhost:8001";
 
-const Plans = () => {
+const PlansSingleWorking = () => {
   const { user } = useContext(UserContext);
   const [savedPlans, setSavedPlans] = useState("");
   const [open, set] = useState(false);
@@ -100,4 +100,4 @@ const Plans = () => {
   );
 };
 // background: linear-gradient(135deg, rgb(246, 211, 101) 0%, rgb(253, 160, 133) 100%)
-export default Plans;
+export default PlansSingleWorking;
