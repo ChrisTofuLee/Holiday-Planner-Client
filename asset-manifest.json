@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/holiday-planner-client/static/css/main.a2eaec7a.chunk.css",
+    "main.js": "/holiday-planner-client/static/js/main.e6e33b7a.chunk.js",
+    "main.js.map": "/holiday-planner-client/static/js/main.e6e33b7a.chunk.js.map",
+    "runtime-main.js": "/holiday-planner-client/static/js/runtime-main.75aeda02.js",
+    "runtime-main.js.map": "/holiday-planner-client/static/js/runtime-main.75aeda02.js.map",
+    "static/css/2.6df4c8f8.chunk.css": "/holiday-planner-client/static/css/2.6df4c8f8.chunk.css",
+    "static/js/2.39e07f6a.chunk.js": "/holiday-planner-client/static/js/2.39e07f6a.chunk.js",
+    "static/js/2.39e07f6a.chunk.js.map": "/holiday-planner-client/static/js/2.39e07f6a.chunk.js.map",
+    "index.html": "/holiday-planner-client/index.html",
+    "precache-manifest.124007d7be5832bc80c1db22953d3871.js": "/holiday-planner-client/precache-manifest.124007d7be5832bc80c1db22953d3871.js",
+    "service-worker.js": "/holiday-planner-client/service-worker.js",
+    "static/css/2.6df4c8f8.chunk.css.map": "/holiday-planner-client/static/css/2.6df4c8f8.chunk.css.map",
+    "static/css/main.a2eaec7a.chunk.css.map": "/holiday-planner-client/static/css/main.a2eaec7a.chunk.css.map",
+    "static/js/2.39e07f6a.chunk.js.LICENSE.txt": "/holiday-planner-client/static/js/2.39e07f6a.chunk.js.LICENSE.txt",
+    "static/media/a.png": "/holiday-planner-client/static/media/a.5f5c1e11.png",
+    "static/media/mountains.jpg": "/holiday-planner-client/static/media/mountains.fea06681.jpg",
+    "static/media/palmTree.jpg": "/holiday-planner-client/static/media/palmTree.9bb365dd.jpg",
+    "static/media/seaside1.jpg": "/holiday-planner-client/static/media/seaside1.58c1dbd2.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.75aeda02.js",
+    "static/css/2.6df4c8f8.chunk.css",
+    "static/js/2.39e07f6a.chunk.js",
+    "static/css/main.a2eaec7a.chunk.css",
+    "static/js/main.e6e33b7a.chunk.js"
+  ]
+}
