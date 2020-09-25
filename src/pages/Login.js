@@ -4,6 +4,7 @@ import { Row, Col, Image } from "antd";
 import LoginContainer from "../containers/LoginContainer";
 
 import palmTree from "../assets/palmTree.jpg";
+import instructions from "../assets/a.png";
 
 const Login = () => {
   const ImageColumn = () => (
@@ -13,20 +14,18 @@ const Login = () => {
           margin: "auto",
           height: "60%",
           width: "50%",
-          paddingTop: "100px",
           verticalAlign: "middle",
           textAlign: "center",
         }}
       >
-        <h1 style={{ color: "white", textShadow: "2px 2px #FF4D4F" }}>
-          Holiday Planner
-        </h1>
+        <img src={instructions} />
+
       </Col>
   );
 
   const FormColumn = () => (
     <Col span={12}>
-      <div style={{ marginTop: "25%" }}>
+      <div style={{ marginTop: "20%" }}>
         <div
           style={{
             textAlign: "center",
@@ -47,8 +46,9 @@ const Login = () => {
       backgroundImage: `url(${palmTree})`,
       backgroundSize: "50% 100%",
     }}>
-      <ImageColumn />
+      
       <FormColumn />
+      <ImageColumn />
     </Row>
   );
 };

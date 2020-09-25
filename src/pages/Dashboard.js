@@ -13,23 +13,18 @@ import {
   Collapse,
   List,
   Avatar,
-  Space,
   Modal,
   Divider,
   Comment,
-  Spin,
   Tag,
   Skeleton,
 } from "antd";
 import {
   CloseOutlined,
   CheckOutlined,
-  MessageOutlined,
-  LikeOutlined,
   PushpinOutlined,
   StarOutlined,
   SearchOutlined,
-  LoadingOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import "./Dashboard.css";
@@ -39,17 +34,12 @@ import seaside from "../assets/seaside1.jpg";
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
 
-const API_URL = process.env.API_URL || "http://localhost:8001";
+const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8001" : "https://limitless-eyrie-86412.herokuapp.com";
 
 function callback(key) {
-  console.log(key);
+  console.log(key);   
 }
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
+
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -64,6 +54,8 @@ const Dashboard = () => {
   const [nightlifeCheck, setNightlifeCheck] = useState(false);
   const [modalVisibleSave, setModalVisibleSave] = useState(false);
   const [modalVisibleViewMore, setModalVisibleViewMore] = useState(false);
+  const [foodModalVisibleViewMore, setFoodModalVisibleViewMore] = useState(false);
+  const [activitiesModalVisibleViewMore, setActivitiesModalVisibleViewMore] = useState(false);
   const [requiredSwitch, setRequiredSwitch] = useState(false);
   const [savedPlans, setSavedPlans] = useState("");
   const [failSave, setFailSave] = useState(false);
@@ -148,16 +140,29 @@ const Dashboard = () => {
   const handleModalSaveCancel = () => {
     setModalVisibleSave(false);
   };
-  const showModalViewMore = () => {
-    setModalVisibleViewMore(true);
+  const showModalViewMore = (e) => {
+    console.log(e.target)
+    if (e.target.id === "foodButton") {
+      setFoodModalVisibleViewMore(true)
+    } else if (e.target.id === "activitiesButton") {
+      setActivitiesModalVisibleViewMore(true)
+    } else {
+    setModalVisibleViewMore(true);}
   };
   const handleModalViewMoreOk = (e) => {
     console.log(e);
-    setModalVisibleViewMore(false);
+    if (modalVisibleViewMore ===true){
+    setModalVisibleViewMore(false);}
+    if (foodModalVisibleViewMore === true) {
+      setFoodModalVisibleViewMore(false)
+    }
   };
   const handleModalViewMoreCancel = (e) => {
     console.log(e);
-    setModalVisibleViewMore(false);
+    if (modalVisibleViewMore ===true){
+      setModalVisibleViewMore(false);}
+      if (foodModalVisibleViewMore === true) {
+        setFoodModalVisibleViewMore(false)}
   };
 
   // useEffect(() => {
@@ -434,7 +439,6 @@ const Dashboard = () => {
                       width: "120px",
                       background:
                         "linear-gradient(135deg, rgb(255,0,0) 0%, rgb(247,205,105) 100%)",
-
                     }}
                     size="large"
                     type="primary"
@@ -458,7 +462,8 @@ const Dashboard = () => {
         >
           {!showResults ? null : (
             <Collapse
-              defaultActiveKey={["1", "2", "3"]}
+              defaultActiveKey={["foodPanel", "activitiesPanel", "nightlifePanel"]}
+              key="collapse table"
               onChange={callback}
               style={{
                 marginTop: "20px",
@@ -469,8 +474,8 @@ const Dashboard = () => {
             >
               <Panel
                 header="Food list"
-                key="1"
-                style={{ minWidth: "1000px", maxWidth: "1000px", }}
+                key="foodPanel"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
               >
                 {loading ? (
                   <div>
@@ -482,6 +487,7 @@ const Dashboard = () => {
                   <List
                     itemLayout="vertical"
                     size="large"
+                    key="foodList"
                     pagination={{
                       onChange: (page) => {
                         console.log(page);
@@ -491,7 +497,7 @@ const Dashboard = () => {
                     dataSource={foodData}
                     renderItem={(item) => (
                       <List.Item
-                        key={item.name}
+                        key={`food ${item.googlePlacesId}`}
                         actions={[
                           <div>
                             <Button
@@ -533,7 +539,6 @@ const Dashboard = () => {
                                 background:
                                   "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
                               }}
-
                               style={{ borderRadius: "20px", padding: "15px" }}
                             >
                               <Form
@@ -568,7 +573,10 @@ const Dashboard = () => {
                                   <Button
                                     type="primary"
                                     htmlType="submit"
-                                    style={{background: "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
+                                    style={{
+                                      background:
+                                        "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                                    }}
                                     shape="round"
                                   >
                                     Save
@@ -604,7 +612,588 @@ const Dashboard = () => {
                                 >
                                   {savedPlans.map((plan) => {
                                     return (
-                                      <p>
+                                      <p key={`plans food ${plan._id}`}>
+                                        <Tag
+                                          color="volcano"
+                                          style={{
+                                            borderRadius: "25px",
+                                            fontSize: "15px",
+                                            height: "22px",
+                                            paddingLeft: "10px",
+                                            paddingRight: "10px",
+                                          }}
+                                        >
+                                          <a
+                                            id={plan._id}
+                                            className={item.googlePlacesId}
+                                            onClick={saveToPlan}
+                                          >
+                                            {plan.title}
+                                          </a>
+                                        </Tag>
+                                        <a
+                                          id={plan._id}
+                                          onClick={deletePlan}
+                                          style={{
+                                            float: "right",
+                                            paddingRight: "50px",
+                                          }}
+                                        >
+                                          <DeleteOutlined
+                                            style={{
+                                              paddingRight: "10px",
+                                              paddingBottom: "5px",
+                                            }}
+                                          />{" "}
+                                          Delete
+                                        </a>
+                                      </p>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </Modal>
+                            {/* <SaveModal modalVisibleSave = {modalVisibleSave}
+  handleModalSaveOk = {handleModalSaveOk}
+  handleModalSaveCancel = {handleModalSaveCancel}
+  saveNewPlan = {saveNewPlan}
+  failSave = {failSave}
+  failPlanSave = {failPlanSave}
+  savedPlans = {savedPlans}
+  saveToPlan = {saveToPlan}
+  item = {item}
+  deletePlan = {deletePlan} /> */}
+                          </div>,
+                          <div>
+                            <Button
+                            id="foodButton"
+                              type="primary"
+                              onClick={showModalViewMore}
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                              shape="round"
+                            >
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                                id="foodButton"
+                              >
+                                <SearchOutlined
+                                
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                View More Info
+                              </div>
+                            </Button>
+                            <Modal
+                              title="Latest Reviews"
+                              visible={foodModalVisibleViewMore}
+                              onOk={handleModalViewMoreOk}
+                              onCancel={handleModalViewMoreCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                              style={{ borderRadius: "20px", padding: "15px" }}
+                            >
+                              <div
+                                style={{
+                                  height: "600px",
+                                  overflow: "scroll",
+                                  overflowX: "hidden",
+                                  width: "auto",
+                                  paddingRight: "30px",
+                                }}
+                              >
+                                {item.review.map((rev) => (
+                                  <Comment
+                                  key={`review food ${rev.time}`}
+                                    author={rev.author_name}
+                                    avatar={
+                                      <Avatar
+                                        src={rev.profile_photo_url}
+                                        alt={rev.author_name}
+                                      />
+                                    }
+                                    content={<p>{rev.text}</p>}
+                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                  >
+                                    <Divider />
+                                  </Comment>
+                                ))}
+                              </div>
+                            </Modal>
+                          </div>,
+                        ]}
+                        extra={
+                          <img
+                            style={{ height: "200px", width: "300px" }}
+                            alt="logo"
+                            src={item.photo}
+                          />
+                        }
+                      >
+                        <List.Item.Meta
+                          avatar={<Avatar src={item.icon} />}
+                          title={
+                            <a
+                              href={item.siteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {item.name}
+                            </a>
+                          }
+                          description={item.address}
+                        />
+                        Opening Times:{" "}
+                        {item.openingTimes.map((time) => `${time}, `)}
+                      </List.Item>
+                    )}
+                  />
+                )}
+              </Panel>
+              <Panel
+                header="Activities list"
+                key="activitiesPanel"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
+              >
+                {loading ? (
+                  <div>
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                  </div>
+                ) : (
+                  <List
+                    itemLayout="vertical"
+                    size="large"
+                    key="activities list"
+                    pagination={{
+                      onChange: (page) => {
+                        console.log(page);
+                      },
+                      pageSize: 4,
+                    }}
+                    dataSource={activitiesData}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={`activites ${item.googlePlacesId}`}
+                        actions={[
+                          <div>
+                          <Button
+                            type="primary"
+                            onClick={showSaveModal}
+                            shape="round"
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                            }}
+                          >
+                            <div
+                              className="icons-list"
+                              style={{ color: "white" }}
+                            >
+                              <StarOutlined
+                                style={{
+                                  display: "inline-block",
+                                  verticalAlign: "middle",
+                                  marginRight: "5px",
+                                  marginBottom: "2px",
+                                }}
+                              />
+                              Save to plan
+                            </div>
+                          </Button>
+                          <Modal
+                            title="Save To a Plan"
+                            visible={modalVisibleSave}
+                            onOk={handleModalSaveOk}
+                            onCancel={handleModalSaveCancel}
+                            cancelButtonProps={{ style: { display: "none" } }}
+                            okButtonProps={{
+                              danger: true,
+                              shape: "round",
+                              background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                            }}
+                            style={{ borderRadius: "20px", padding: "15px" }}
+                          >
+                            <Form
+                              name="newPlan"
+                              layout="inline"
+                              onFinish={saveNewPlan}
+                              initialValues={{
+                                PlanName: {
+                                  planName: "",
+                                },
+                              }}
+                            >
+                              <Form.Item
+                                name="planName"
+                                label="New Plan: "
+                                rules={[
+                                  {
+                                    require: true,
+                                    message: "please enter a name",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  placeholder="Plan to Crete"
+                                  style={{
+                                    borderRadius: "25px",
+                                    marginBottom: "10px",
+                                  }}
+                                />
+                              </Form.Item>
+                              <Form.Item>
+                                <Button
+                                  type="primary"
+                                  htmlType="submit"
+                                  style={{
+                                    background:
+                                      "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                                  }}
+                                  shape="round"
+                                >
+                                  Save
+                                </Button>
+                              </Form.Item>
+                            </Form>
+                            {failSave ? (
+                              <p style={{ color: "red" }}>
+                                Please enter unique plan name
+                              </p>
+                            ) : null}
+                            {failPlanSave ? (
+                              <p style={{ color: "red" }}>
+                                Place already exists in selected plan
+                              </p>
+                            ) : null}
+                            <p>existing plans:</p>
+                            {!savedPlans.length ? (
+                              <p>
+                                No saved plans yet, please save a new one
+                                above
+                                <PushpinOutlined
+                                  style={{ paddingLeft: "10px" }}
+                                />
+                              </p>
+                            ) : (
+                              <div
+                                style={{
+                                  height: "300px",
+                                  overflow: "scroll",
+                                  overflowX: "hidden",
+                                }}
+                              >
+                                {savedPlans.map((plan) => {
+                                  return (
+                                    <p key={`plan activities ${plan._id}`}>
+                                      <Tag
+                                        color="volcano"
+                                        style={{
+                                          borderRadius: "25px",
+                                          fontSize: "15px",
+                                          height: "22px",
+                                          paddingLeft: "10px",
+                                          paddingRight: "10px",
+                                        }}
+                                      >
+                                        <a
+                                          id={plan._id}
+                                          className={item.googlePlacesId}
+                                          onClick={saveToPlan}
+                                        >
+                                          {plan.title}
+                                        </a>
+                                      </Tag>
+                                      <a
+                                        id={plan._id}
+                                        onClick={deletePlan}
+                                        style={{
+                                          float: "right",
+                                          paddingRight: "50px",
+                                        }}
+                                      >
+                                        <DeleteOutlined
+                                          style={{
+                                            paddingRight: "10px",
+                                            paddingBottom: "5px",
+                                          }}
+                                        />{" "}
+                                        Delete
+                                      </a>
+                                    </p>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </Modal>
+                          {/* <SaveModal modalVisibleSave = {modalVisibleSave}
+handleModalSaveOk = {handleModalSaveOk}
+handleModalSaveCancel = {handleModalSaveCancel}
+saveNewPlan = {saveNewPlan}
+failSave = {failSave}
+failPlanSave = {failPlanSave}
+savedPlans = {savedPlans}
+saveToPlan = {saveToPlan}
+item = {item}
+deletePlan = {deletePlan} /> */}
+                        </div>,
+                        <div>
+                          <Button
+                          id="activitiesButton"
+                            type="primary"
+                            onClick={showModalViewMore}
+                            style={{
+                              background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                            }}
+                            shape="round"
+                          >
+                            <div
+                              className="icons-list"
+                              style={{ color: "white" }}
+                              id="activitiesButton"
+                            >
+                              <SearchOutlined
+                                style={{
+                                  display: "inline-block",
+                                  verticalAlign: "middle",
+                                  marginRight: "5px",
+                                  marginBottom: "2px",
+                                }}
+                              />
+                              View More Info
+                            </div>
+                          </Button>
+                          <Modal
+                            title="Latest Reviews"
+                            visible={activitiesModalVisibleViewMore}
+                            onOk={handleModalViewMoreOk}
+                            onCancel={handleModalViewMoreCancel}
+                            cancelButtonProps={{ style: { display: "none" } }}
+                            okButtonProps={{
+                              danger: true,
+                              shape: "round",
+                              background:
+                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                            }}
+                            style={{ borderRadius: "20px", padding: "15px" }}
+                          >
+                            <div
+                              style={{
+                                height: "600px",
+                                overflow: "scroll",
+                                overflowX: "hidden",
+                                width: "auto",
+                                paddingRight: "30px",
+                              }}
+                            >
+                              {item.review.map((rev) => (
+                                <Comment
+                                key={`activities review ${rev.time}`}
+                                  author={rev.author_name}
+                                  avatar={
+                                    <Avatar
+                                      src={rev.profile_photo_url}
+                                      alt={rev.author_name}
+                                    />
+                                  }
+                                  content={<p>{rev.text}</p>}
+                                  datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                >
+                                  <Divider />
+                                </Comment>
+                              ))}
+                            </div>
+                          </Modal>
+                        </div>,
+                        ]}
+                        extra={
+                          <img
+                            style={{ height: "200px", width: "300px" }}
+                            alt="logo"
+                            src={item.photo}
+                          />
+                        }
+                      >
+                        <List.Item.Meta
+                          avatar={<Avatar src={item.icon} />}
+                          title={
+                            <a
+                              href={item.siteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {item.name}
+                            </a>
+                          }
+                          description={item.address}
+                        />
+                        Opening Times:{" "}
+                        {item.openingTimes.map((time) => `${time}, `)}
+                      </List.Item>
+                    )}
+                  />
+                )}
+              </Panel>
+              <Panel
+                header="Nightlife list"
+                key="nightlifePanel"
+                style={{ minWidth: "1000px", maxWidth: "1000px" }}
+              >
+                {loading ? (
+                  <div>
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                    <Skeleton active avatar />
+                  </div>
+                ) : (
+                  <List
+                    itemLayout="vertical"
+                    size="large"
+                    key="nightlife list"
+                    pagination={{
+                      onChange: (page) => {
+                        console.log(page);
+                      },
+                      pageSize: 4,
+                    }}
+                    dataSource={nightlifeData}
+                    renderItem={(item) => (
+                      <List.Item
+                        key={`nightlife ${item.googleId}`}
+                        actions={[
+                          <div>
+                            <Button
+                              type="primary"
+                              onClick={showSaveModal}
+                              shape="round"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                            >
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                              >
+                                <StarOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                Save to plan
+                              </div>
+                            </Button>
+                            <Modal
+                              title="Save To a Plan"
+                              visible={modalVisibleSave}
+                              onOk={handleModalSaveOk}
+                              onCancel={handleModalSaveCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                              style={{ borderRadius: "20px", padding: "15px" }}
+                            >
+                              <Form
+                                name="newPlan"
+                                layout="inline"
+                                onFinish={saveNewPlan}
+                                initialValues={{
+                                  PlanName: {
+                                    planName: "",
+                                  },
+                                }}
+                              >
+                                <Form.Item
+                                  name="planName"
+                                  label="New Plan: "
+                                  rules={[
+                                    {
+                                      require: true,
+                                      message: "please enter a name",
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    placeholder="Plan to Crete"
+                                    style={{
+                                      borderRadius: "25px",
+                                      marginBottom: "10px",
+                                    }}
+                                  />
+                                </Form.Item>
+                                <Form.Item>
+                                  <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{
+                                      background:
+                                        "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                                    }}
+                                    shape="round"
+                                  >
+                                    Save
+                                  </Button>
+                                </Form.Item>
+                              </Form>
+                              {failSave ? (
+                                <p style={{ color: "red" }}>
+                                  Please enter unique plan name
+                                </p>
+                              ) : null}
+                              {failPlanSave ? (
+                                <p style={{ color: "red" }}>
+                                  Place already exists in selected plan
+                                </p>
+                              ) : null}
+                              <p>existing plans:</p>
+                              {!savedPlans.length ? (
+                                <p>
+                                  No saved plans yet, please save a new one
+                                  above
+                                  <PushpinOutlined
+                                    style={{ paddingLeft: "10px" }}
+                                  />
+                                </p>
+                              ) : (
+                                <div
+                                  style={{
+                                    height: "300px",
+                                    overflow: "scroll",
+                                    overflowX: "hidden",
+                                  }}
+                                >
+                                  {savedPlans.map((plan) => {
+                                    return (
+                                      <p key={`plan nightlife ${plan._id}`}>
                                         <Tag
                                           color="volcano"
                                           style={{
@@ -660,8 +1249,10 @@ const Dashboard = () => {
                             <Button
                               type="primary"
                               onClick={showModalViewMore}
-                              style={{background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
                               shape="round"
                             >
                               <div
@@ -685,8 +1276,12 @@ const Dashboard = () => {
                               onOk={handleModalViewMoreOk}
                               onCancel={handleModalViewMoreCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round", background:
-                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
                               style={{ borderRadius: "20px", padding: "15px" }}
                             >
                               <div
@@ -700,6 +1295,7 @@ const Dashboard = () => {
                               >
                                 {item.review.map((rev) => (
                                   <Comment
+                                  key={`review nightlife ${rev.time}`}
                                     author={rev.author_name}
                                     avatar={
                                       <Avatar
@@ -714,274 +1310,6 @@ const Dashboard = () => {
                                   </Comment>
                                 ))}
                               </div>
-                            </Modal>
-                          </div>,
-                        ]}
-                        extra={
-                          <img
-                            style={{ height: "200px", width: "300px" }}
-                            alt="logo"
-                            src={item.photo}
-                          />
-                        }
-                      >
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.icon} />}
-                          title={
-                            <a
-                              href={item.siteUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {item.name}
-                            </a>
-                          }
-                          description={item.address}
-                        />
-                        Opening Times:{" "}
-                        {item.openingTimes.map((time) => `${time}, `)}
-                      </List.Item>
-                    )}
-                  />
-                )}
-              </Panel>
-              <Panel
-                header="Activities list"
-                key="1"
-                style={{ minWidth: "1000px", maxWidth: "1000px" }}
-              >
-                {loading ? (
-                  <div>
-                    <Skeleton active avatar />
-                    <Skeleton active avatar />
-                    <Skeleton active avatar />
-                  </div>
-                ) : (
-                  <List
-                    itemLayout="vertical"
-                    size="large"
-                    pagination={{
-                      onChange: (page) => {
-                        console.log(page);
-                      },
-                      pageSize: 4,
-                    }}
-                    dataSource={activitiesData}
-                    renderItem={(item) => (
-                      <List.Item
-                        key={item.name}
-                        actions={[
-                          <div>
-                            <Button
-                              type="primary"
-                              onClick={showSaveModal}
-                              danger
-                              shape="round"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                background:
-                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"
-                              }}
-                            >
-                              <div
-                                className="icons-list"
-                                style={{ color: "white" }}
-                              >
-                                <StarOutlined
-                                  style={{
-                                    display: "inline-block",
-                                    verticalAlign: "middle",
-                                    marginRight: "5px",
-                                    marginBottom: "2px",
-                                  }}
-                                />
-                                Save to plan
-                              </div>
-                            </Button>
-                          </div>,
-                          <div>
-                            <Button
-                              type="primary"
-                              onClick={showModalViewMore}
-                              style={{background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
-                              shape="round"
-                            >
-                              <div
-                                className="icons-list"
-                                style={{ color: "white" }}
-                              >
-                                <SearchOutlined
-                                  style={{
-                                    display: "inline-block",
-                                    verticalAlign: "middle",
-                                    marginRight: "5px",
-                                    marginBottom: "2px",
-                                  }}
-                                />
-                                View More Info
-                              </div>
-                            </Button>
-                            <Modal
-                              title="Latest Reviews"
-                              visible={modalVisibleViewMore}
-                              onOk={handleModalViewMoreOk}
-                              onCancel={handleModalViewMoreCancel}
-                              cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round", background:
-                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)" }}
-                            >
-                              {item.review.map((rev) => (
-                                <Comment
-                                  author={rev.author_name}
-                                  avatar={
-                                    <Avatar
-                                      src={rev.profile_photo_url}
-                                      alt={rev.author_name}
-                                    />
-                                  }
-                                  content={<p>{rev.text}</p>}
-                                  datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                >
-                                  <Divider />
-                                </Comment>
-                              ))}
-                            </Modal>
-                          </div>,
-                        ]}
-                        extra={
-                          <img
-                            style={{ height: "200px", width: "300px" }}
-                            alt="logo"
-                            src={item.photo}
-                          />
-                        }
-                      >
-                        <List.Item.Meta
-                          avatar={<Avatar src={item.icon} />}
-                          title={
-                            <a
-                              href={item.siteUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {item.name}
-                            </a>
-                          }
-                          description={item.address}
-                        />
-                        Opening Times:{" "}
-                        {item.openingTimes.map((time) => `${time}, `)}
-                      </List.Item>
-                    )}
-                  />
-                )}
-              </Panel>
-              <Panel
-                header="Nightlife list"
-                key="1"
-                style={{ minWidth: "1000px", maxWidth: "1000px" }}
-              >
-                {loading ? (
-                  <div>
-                    <Skeleton active avatar />
-                    <Skeleton active avatar />
-                    <Skeleton active avatar />
-                  </div>
-                ) : (
-                  <List
-                    itemLayout="vertical"
-                    size="large"
-                    pagination={{
-                      onChange: (page) => {
-                        console.log(page);
-                      },
-                      pageSize: 4,
-                    }}
-                    dataSource={nightlifeData}
-                    renderItem={(item) => (
-                      <List.Item
-                        key={item.name}
-                        actions={[
-                          <div>
-                            <Button
-                              type="primary"
-                              onClick={showSaveModal}
-                              
-                              shape="round"
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                background:
-                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"
-                              }}
-                            >
-                              <div
-                                className="icons-list"
-                                style={{ color: "white" }}
-                              >
-                                <StarOutlined
-                                  style={{
-                                    display: "inline-block",
-                                    verticalAlign: "middle",
-                                    marginRight: "5px",
-                                    marginBottom: "2px",
-                                  }}
-                                />
-                                Save to plan
-                              </div>
-                            </Button>
-                          </div>,
-                          <div>
-                            <Button
-                              type="primary"
-                              onClick={showModalViewMore}
-                              style={{background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
-                              shape="round"
-                            >
-                              <div
-                                className="icons-list"
-                                style={{ color: "white" }}
-                              >
-                                <SearchOutlined
-                                  style={{
-                                    display: "inline-block",
-                                    verticalAlign: "middle",
-                                    marginRight: "5px",
-                                    marginBottom: "2px",
-                                  }}
-                                />
-                                View More Info
-                              </div>
-                            </Button>
-                            <Modal
-                              title="Latest Reviews"
-                              visible={modalVisibleViewMore}
-                              onOk={handleModalViewMoreOk}
-                              onCancel={handleModalViewMoreCancel}
-                              cancelButtonProps={{ style: { display: "none" } }}
-                              okButtonProps={{ danger: true, shape: "round", background:
-                              "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)"}}
-                            >
-                              {item.review.map((rev) => (
-                                <Comment
-                                  author={rev.author_name}
-                                  avatar={
-                                    <Avatar
-                                      src={rev.profile_photo_url}
-                                      alt={rev.author_name}
-                                    />
-                                  }
-                                  content={<p>{rev.text}</p>}
-                                  datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                >
-                                  <Divider />
-                                </Comment>
-                              ))}
                             </Modal>
                           </div>,
                         ]}

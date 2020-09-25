@@ -40,6 +40,14 @@ const EditPlans = () => {
     fetchPlans();
   }, [setSavedPlans, user.token]);
 
+  const fetchPlans = async () => {
+    const { data } = await axios.get(`${API_URL}/api/plans`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      setSavedPlans(data.allPlans);
+  }
   const deletePlan = async (event) => {
     console.log(event);
     const id = event._id;
@@ -49,20 +57,33 @@ const EditPlans = () => {
       },
     });
 
-    const { data } = await axios.get(`${API_URL}/api/plans`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
-    setSavedPlans(data.allPlans);
+    fetchPlans()
   };
 
-  const deletePlace = (event) => {
-      
-      const id = event.target.id
-      const foundPlan = savedPlans.find((plans) => plans.places._id === id);
-      console.log("click", foundPlan )
-  }
+  const deletePlace = async (event) => {
+    const buttonInfo = event.target.id.split(" ");
+    const planId = buttonInfo[0]
+    const googlePlacesId = buttonInfo[1]
+
+    console.log("p", planId)
+    console.log("g", googlePlacesId)
+    await axios.put(
+      `${API_URL}/api/plans/${planId}/removePlace`,
+      { googlePlacesId },
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    fetchPlans()
+    // const { data } = await axios.get(`${API_URL}/api/plans`, {
+    //   headers: {
+    //     Authorization: `Bearer ${user.token}`,
+    //   },
+    // });
+    // setSavedPlans(data.allPlans);
+  };
 
   const { Panel } = Collapse;
   const { Option } = Select;
@@ -78,7 +99,7 @@ const EditPlans = () => {
       }}
     />
   );
-
+console.log(savedPlans)
   const antIcon = (
     <LoadingOutlined style={{ fontSize: 150, margin: "0 auto" }} spin />
   );
@@ -135,91 +156,91 @@ const EditPlans = () => {
                   <Panel
                     header={plan.title}
                     key={plan._id}
-                    id={plan._id}
                     extra={genExtra(plan)}
-                  ><Row gutter={16}>
-                    {plan.places.map((place) => {
-                      return (
-                        <Col span={8}><Card
-                          hoverable
-                          style={{ width: 300, textAlign: "center" }}
-                          key={place._id}
-                          cover={
-                            <img
-                              alt="example"
-                              src={place.photo}
-                              style={{
-                                height: "200px",
-                                width: "300px",
-                                marginRight: "20px",
-                                marginBottom: "20px",
-                                display: "flex",
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                              }}
-                            />
-                          }
-                        >
-                          <Meta
-                            title={place.name}
-                            description={
-                                <div>
-                              <a
-                              href={place.siteUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            ><Button
-                                shape="round"
-                                style={{
-                                  width: "100px",
-                                  background:
-                                    "linear-gradient(135deg, rgb(247,205,105) 0%, rgb(255,0,0) 100%)",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  marginRight: "20px"
-                                }}
-                                size="large"
-                                type="primary"
-                                htmlType="submit"
-                              >
-                                View Site
-                              </Button>
-                              </a>
-                              <Button
-                              shape="round"
-                              style={{
-                                width: "100px",
-                                background:
-                                  "linear-gradient(135deg, rgb(255,0,0) 0%, rgb(247,205,105) 100%)",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              size="large"
-                              type="primary"
-                              htmlType="submit"
-                              id={place._id}
-                              onClick={deletePlace}
+                  >
+                    <Row gutter={16}>
+                      {plan.places.map((place) => {
+                        return (
+                          <Col span={8}>
+                            <Card
+                              hoverable
+                              style={{ width: 300, textAlign: "center", marginBottom: "20px", borderColor: "lightgrey" }}
+                              key={place._id}
+                              cover={
+                                <img
+                                  alt="example"
+                                  src={place.photo}
+                                  style={{
+                                    height: "200px",
+                                    width: "300px",
+                                    marginRight: "20px",
+                                    marginBottom: "20px",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    flexWrap: "wrap",
+                                  }}
+                                />
+                              }
                             >
-                              Remove
-                            </Button>
-                            </div>
-                            }
-                            headStyle={{
-                              textWrap: "break-word",
-                              display: "inline-block",
-                            }}
-                          />
-                        </Card>
-                        </Col>
-                      );
-                    })}
+                              <Meta
+                                title={place.name}
+                                description={
+                                  <div>
+                                    <a
+                                      href={place.siteUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <Button
+                                        shape="round"
+                                        style={{
+                                          width: "100px",
+                                          background:
+                                            "linear-gradient(135deg, rgb(247,205,105) 0%, rgb(255,0,0) 100%)",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          marginRight: "20px",
+                                        }}
+                                        size="large"
+                                        type="primary"
+                                        htmlType="submit"
+                                      >
+                                        View Site
+                                      </Button>
+                                    </a>
+                                    <Button
+                                      shape="round"
+                                      style={{
+                                        width: "100px",
+                                        background:
+                                          "linear-gradient(135deg, rgb(255,0,0) 0%, rgb(247,205,105) 100%)",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                      }}
+                                      size="large"
+                                      type="primary"
+                                      htmlType="submit"
+                                      id={`${place.planId} ${place.googlePlacesId}`}
+                                      onClick={deletePlace}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                }
+                                headStyle={{
+                                  textWrap: "break-word",
+                                  display: "inline-block",
+                                }}
+                              />
+                            </Card>
+                          </Col>
+                        );
+                      })}
                     </Row>
                   </Panel>
                 );
               })}
-              <Panel header="This is panel header 1" key="1" extra={genExtra()}>
-                <div>gigigigi</div>
-              </Panel>
+              
             </Collapse>
           )}
         </div>

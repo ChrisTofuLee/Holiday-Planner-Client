@@ -28,8 +28,8 @@ const App = () => {
           </Content>
           </div>
         </UserContext.Provider>
-        <Footer style={{position: "fixed",
-  bottom: "0", width: "100%", opacity: "50%"}}>Footer</Footer>
+        {/* <Footer style={{position: "fixed",
+  bottom: "0", width: "100%", opacity: "50%"}}>Footer</Footer> */}
       </Layout>
     </HashRouter>
   );

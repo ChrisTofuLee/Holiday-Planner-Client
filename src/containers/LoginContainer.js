@@ -51,7 +51,8 @@ const LoginContainer = () => {
     }
   };
 
-  return (
+  return (<div>
+    <h1 style={{ color: "white", textShadow: "2px 2px #FF4D4F" }}>Holiday Planner</h1>
     <Card
       title={showLogin ? "Log In" : "Sign Up"}
       headStyle={{
@@ -83,6 +84,7 @@ const LoginContainer = () => {
         <SignUpForm onSubmit={handleSignUpSubmit} error={error} />
       )}
     </Card>
+    </div>
   );
 };
 

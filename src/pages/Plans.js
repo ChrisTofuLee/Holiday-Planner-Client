@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Divider } from "antd";
+import { Divider, Spin } from "antd";
 import PlanBox from "../components/PlanBox";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import mountain from "../assets/mountains.jpg";
-
+import { LoadingOutlined } from "@ant-design/icons";
 const API_URL = process.env.API_URL || "http://localhost:8001";
 
 const Plans = () => {
@@ -22,6 +22,10 @@ const Plans = () => {
     };
     fetchPlans();
   }, [setSavedPlans, user.token]);
+
+  const antIcon = (
+    <LoadingOutlined style={{ fontSize: 150, margin: "0 auto" }} spin />
+  );
 
   return (
     <div
@@ -55,7 +59,12 @@ const Plans = () => {
             <tbody>
               <tr>
                 <th scope="row">
-                  <div
+                {!savedPlans ? (
+            <Spin
+              indicator={antIcon}
+              style={{ display: "flex", justifyContent: "center" }}
+            />
+          ) : (<div
                     style={{
                       display: "flex",
                       flexDirection: "row",
@@ -68,7 +77,7 @@ const Plans = () => {
                       savedPlans.map((plan) => (
                         <PlanBox key={plan._id} plan={plan} />
                       ))}
-                  </div>
+                  </div>)}
                 </th>
               </tr>
             </tbody>
