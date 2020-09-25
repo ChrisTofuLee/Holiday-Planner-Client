@@ -5,7 +5,7 @@ import UserContext from "./context/UserContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Plans from "./pages/Plans";
-import PlansSingleWorking from "./pages/PlansSingleWorking";
+import EditPlans from "./pages/EditPlans";
 
 const Routes = () => {
   const { user } = useContext(UserContext);
@@ -22,6 +22,9 @@ const Routes = () => {
       </Route>
       <Route path="/plans" exact>
         {user.token ? <Plans /> : <Redirect to="/login" />}
+      </Route>
+      <Route path="/editPlans" exact>
+        {user.token ? <EditPlans /> : <Redirect to="/login" />}
       </Route>
     </Switch>
   );

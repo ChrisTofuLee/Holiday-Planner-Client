@@ -21,6 +21,9 @@ const ProtectedRoutes = () => {
       <Menu.Item key="plans">
         <NavLink to="/plans">Plans</NavLink>
       </Menu.Item>
+      <Menu.Item key="EditPlans">
+        <NavLink to="/editPlans">Edit Plans</NavLink>
+      </Menu.Item>
       <Menu.Item
         key="logout"
         style={{ float: "right" }}

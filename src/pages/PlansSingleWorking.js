@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useTransition, useSpring, useChain, config } from "react-spring";
-import { Global, Container, Item } from "./planStyles";
-import PlanBox from '../components/PlanBox';
+import { Container, Item } from "./planStyles";
+import PlanBox from "../components/PlanBox";
 import testData from "./testData";
 import axios from "axios";
 import UserContext from "../context/UserContext";
@@ -37,12 +37,16 @@ const PlansSingleWorking = () => {
   });
   // Build a transition and catch its ref
   const transRef = useRef();
-  const transitions = useTransition(open ? savedPlans[1].places : [], (place) => place.name,{
-    trail: 400 / savedPlans.length,
-    from: { opacity: 0, transform: 'scale(0)' },
-    enter: { opacity: 1, transform: 'scale(1)' },
-    leave: { opacity: 0, transform: 'scale(0)' }
-  });
+  const transitions = useTransition(
+    open ? savedPlans[1].places : [],
+    (place) => place.name,
+    {
+      trail: 400 / savedPlans.length,
+      from: { opacity: 0, transform: "scale(0)" },
+      enter: { opacity: 1, transform: "scale(1)" },
+      leave: { opacity: 0, transform: "scale(0)" },
+    }
+  );
 
   // First run the spring, when it concludes run the transition
   // useChain([springRef, transitionRef]);
@@ -73,7 +77,6 @@ const PlansSingleWorking = () => {
         height: "500px",
       }}
     >
-      <Global />
       <Container
         style={{ ...rest, width: size, height: size, margin: "0 auto" }}
         onClick={() => set((open) => !open)}
@@ -92,7 +95,7 @@ const PlansSingleWorking = () => {
             }}
             onClick={testClick(item, key)}
           >
-            <p style={{textAlign: "center"}}>{item.name}</p>
+            <p style={{ textAlign: "center" }}>{item.name}</p>
           </Item>
         ))}
       </Container>

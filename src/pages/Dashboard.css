@@ -11,3 +11,6 @@
 .ant-btn-primary {
   border-color: #DAD7DA !important;
 }
+.ant-pagination-item-active {
+  border-color: red !important;
+}

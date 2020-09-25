@@ -179,12 +179,12 @@ const Dashboard = () => {
     if (planChecker(planName, savedPlans) === null) {
       setFailSave(false);
       console.log(planName);
-      const data = await axios.post(`${API_URL}/api/plans`, planName, {
+      await axios.post(`${API_URL}/api/plans`, planName, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      console.log(data);
+
       setFailSave(false);
       showSaveModal();
       // const { foodResults, nightlifeResults, activitiesResults } = data;
