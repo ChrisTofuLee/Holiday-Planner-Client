@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import { HashRouter } from "react-router-dom";
-import { Layout } from "antd";
+import {
+  Layout,
+  Col,
+  Row,
+  Typography,
+  Card,
+  Button,
+  Form,
+  Switch,
+  Input,
+  Collapse,
+} from "antd";
 
 import Routes from "./Routes";
 import NavBar from "./components/NavBar";
@@ -8,28 +19,34 @@ import UserContext from "./context/UserContext";
 
 import "./App.css";
 
-const { Header, Footer, Content } = Layout;
+import seaside from "./assets/seaside1.jpg";
 
+const { Panel } = Collapse;
+const { Header, Footer, Content } = Layout;
+const { Title, Text } = Typography;
+
+function callback(key) {
+  console.log(key);
+}
+const text = `
+  A dog is a type of domesticated animal.
+  Known for its loyalty and faithfulness,
+  it can be found as a welcome guest in many households across the world.
+`;
 const App = () => {
-  const localUser = localStorage.getItem("user");
-  const parsedLocalUser = JSON.parse(localUser);
-  const [user, setUser] = useState(parsedLocalUser || {});
-  
+  const [user, setUser] = useState({});
+
   return (
     <HashRouter>
       <Layout>
         <UserContext.Provider value={{ user, setUser }}>
-        <div>
-          <Header style={{ padding: 0, height: "6.5vh"}}>
+          <Header style={{ padding: 0 }}>
             <NavBar />
           </Header>
           <Content>
-            <Routes />
+            
           </Content>
-          </div>
         </UserContext.Provider>
-        {/* <Footer style={{position: "fixed",
-  bottom: "0", width: "100%", opacity: "50%"}}>Footer</Footer> */}
       </Layout>
     </HashRouter>
   );

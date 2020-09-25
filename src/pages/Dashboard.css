@@ -1,0 +1,16 @@
+.ant-switch-checked {
+  background-color: red !important;
+}
+.ant-collapse-header {
+  color: red !important;
+  font-weight: bold;
+}
+.ant-modal-title {
+  color: red !important;
+}
+.ant-btn-primary {
+  border-color: #DAD7DA !important;
+}
+.ant-pagination-item-active {
+  border-color: red !important;
+}

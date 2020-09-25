@@ -6,7 +6,7 @@ import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 import UserContext from "../context/UserContext";
 
-const API_URL = process.env.API_URL || "http://localhost:8000";
+const API_URL = process.env.API_URL || "http://localhost:8001";
 
 const LoginContainer = () => {
   const [showLogin, setShowLogIn] = useState(true);
@@ -26,7 +26,9 @@ const LoginContainer = () => {
       });
 
       const { token } = data;
-
+      const user = { email, token }
+      localStorage.setItem("user", JSON.stringify(user))
+// change destructured email & token to data if you want to include 'displayName'
       setUser({ email, token });
     } catch (error) {
       setError(`Login failed - ${error.message}`);
@@ -49,19 +51,21 @@ const LoginContainer = () => {
     }
   };
 
-  return (
+  return (<div>
+    <h1 style={{ color: "white", textShadow: "2px 2px #FF4D4F" }}>Holiday Planner</h1>
     <Card
       title={showLogin ? "Log In" : "Sign Up"}
       headStyle={{
-        backgroundColor: "#FAFAFA",
+
         color: "red",
         paddingLeft: "80px",
         fontSize: "30px",
+
       }}
       bordered={false}
       style={{
         width: 500,
-        boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)",
+        boxShadow: "-1px 3px 14px -6px rgba(120,111,120,.48)", borderRadius: "20px"
       }}
       extra={
         <Button
@@ -80,6 +84,7 @@ const LoginContainer = () => {
         <SignUpForm onSubmit={handleSignUpSubmit} error={error} />
       )}
     </Card>
+    </div>
   );
 };
 

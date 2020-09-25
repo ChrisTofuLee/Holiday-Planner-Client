@@ -12,6 +12,7 @@ const NavBar = () => {
     return <ProtectedRoutes />;
   }
   return (
+
     <Menu theme="dark" mode="horizontal">
       <Menu.Item key="app">
         <NavLink to="/">

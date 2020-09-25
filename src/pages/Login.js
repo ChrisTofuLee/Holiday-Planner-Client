@@ -4,23 +4,28 @@ import { Row, Col, Image } from "antd";
 import LoginContainer from "../containers/LoginContainer";
 
 import palmTree from "../assets/palmTree.jpg";
+import instructions from "../assets/a.png";
 
 const Login = () => {
   const ImageColumn = () => (
-    <Col span={12}>
-      <Image
-        src={palmTree}
+    <Col
+        span={12}
         style={{
-          minHeight: "100vh",
-          objectFit: "cover",
+          margin: "auto",
+          height: "60%",
+          width: "50%",
+          verticalAlign: "middle",
+          textAlign: "center",
         }}
-      />
-    </Col>
+      >
+        <img src={instructions} />
+
+      </Col>
   );
 
   const FormColumn = () => (
     <Col span={12}>
-      <div style={{ marginTop: "25%" }}>
+      <div style={{ marginTop: "20%" }}>
         <div
           style={{
             textAlign: "center",
@@ -35,9 +40,15 @@ const Login = () => {
   );
 
   return (
-    <Row>
-      <ImageColumn />
+    <Row style={{
+      minHeight: "93.5vh",
+      backgroundRepeat: "no-repeat",
+      backgroundImage: `url(${palmTree})`,
+      backgroundSize: "50% 100%",
+    }}>
+      
       <FormColumn />
+      <ImageColumn />
     </Row>
   );
 };
