@@ -22,7 +22,7 @@ import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 
-const API_URL = process.env.API_URL || "http://localhost:8001";
+const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8001" : "https://limitless-eyrie-86412.herokuapp.com";
 
 const EditPlans = () => {
   const { user } = useContext(UserContext);

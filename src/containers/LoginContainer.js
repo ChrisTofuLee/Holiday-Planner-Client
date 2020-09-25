@@ -6,7 +6,7 @@ import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 import UserContext from "../context/UserContext";
 
-const API_URL = process.env.API_URL || "http://localhost:8001";
+const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8001" : "https://limitless-eyrie-86412.herokuapp.com";
 
 const LoginContainer = () => {
   const [showLogin, setShowLogIn] = useState(true);
