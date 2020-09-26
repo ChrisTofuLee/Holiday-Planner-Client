@@ -65,7 +65,7 @@ const EditPlans = () => {
     const planId = buttonInfo[0]
     const googlePlacesId = buttonInfo[1]
 
-    console.log("p", planId)
+    console.log("p", buttonInfo)
     console.log("g", googlePlacesId)
     await axios.put(
       `${API_URL}/api/plans/${planId}/removePlace`,

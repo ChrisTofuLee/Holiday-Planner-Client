@@ -34,12 +34,14 @@ import seaside from "../assets/seaside1.jpg";
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
 
-const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8001" : "https://limitless-eyrie-86412.herokuapp.com";
+const API_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8001"
+    : "https://limitless-eyrie-86412.herokuapp.com";
 
 function callback(key) {
-  console.log(key);   
+  console.log(key);
 }
-
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
@@ -53,9 +55,18 @@ const Dashboard = () => {
   const [activitiesCheck, setActivitiesCheck] = useState(false);
   const [nightlifeCheck, setNightlifeCheck] = useState(false);
   const [modalVisibleSave, setModalVisibleSave] = useState(false);
+  const [foodModalVisibleSave, setFoodModalVisibleSave] = useState(false);
+  const [activitiesModalVisibleSave, setActivitiesModalVisibleSave] = useState(
+    false
+  );
   const [modalVisibleViewMore, setModalVisibleViewMore] = useState(false);
-  const [foodModalVisibleViewMore, setFoodModalVisibleViewMore] = useState(false);
-  const [activitiesModalVisibleViewMore, setActivitiesModalVisibleViewMore] = useState(false);
+  const [foodModalVisibleViewMore, setFoodModalVisibleViewMore] = useState(
+    false
+  );
+  const [
+    activitiesModalVisibleViewMore,
+    setActivitiesModalVisibleViewMore,
+  ] = useState(false);
   const [requiredSwitch, setRequiredSwitch] = useState(false);
   const [savedPlans, setSavedPlans] = useState("");
   const [failSave, setFailSave] = useState(false);
@@ -103,7 +114,7 @@ const Dashboard = () => {
 
         setLoading(false);
 
-        console.log(foodData);
+       console.log("submitForm")
       } catch (error) {
         setError(`Login failed - ${error.message}`);
       }
@@ -124,45 +135,78 @@ const Dashboard = () => {
     fetchPlans();
   }, [setSavedPlans, user.token]);
 
-  const showSaveModal = async () => {
+  const showSaveModal = async (e) => {
+    if (e.target.id === "foodSaveBtn") {
+      setFoodModalVisibleSave(true);
+    } else if (e.target.id === "activitiesSaveBtn") {
+      setActivitiesModalVisibleSave(true);
+    } else {
+      setModalVisibleSave(true);
+    }
     const { data } = await axios.get(`${API_URL}/api/plans`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     });
     setSavedPlans(data.allPlans);
-    setModalVisibleSave(true);
+    
   };
   const handleModalSaveOk = (e) => {
     console.log(e);
-    setModalVisibleSave(false);
+    if (modalVisibleSave === true) {
+      setModalVisibleSave(false);
+    }
+    if (foodModalVisibleSave === true) {
+      setFoodModalVisibleSave(false);
+    }
+    if (activitiesModalVisibleSave === true) {
+      setActivitiesModalVisibleSave(false);
+    }
   };
   const handleModalSaveCancel = () => {
-    setModalVisibleSave(false);
+    if (modalVisibleSave === true) {
+      setModalVisibleSave(false);
+    }
+    if (foodModalVisibleSave === true) {
+      setFoodModalVisibleSave(false);
+    }
+    if (activitiesModalVisibleSave === true) {
+      setActivitiesModalVisibleSave(false);
+    }
   };
   const showModalViewMore = (e) => {
-    console.log(e.target)
+    console.log(e.target);
     if (e.target.id === "foodButton") {
-      setFoodModalVisibleViewMore(true)
+      setFoodModalVisibleViewMore(true);
     } else if (e.target.id === "activitiesButton") {
-      setActivitiesModalVisibleViewMore(true)
+      setActivitiesModalVisibleViewMore(true);
     } else {
-    setModalVisibleViewMore(true);}
+      setModalVisibleViewMore(true);
+    }
   };
   const handleModalViewMoreOk = (e) => {
     console.log(e);
-    if (modalVisibleViewMore ===true){
-    setModalVisibleViewMore(false);}
+    if (modalVisibleViewMore === true) {
+      setModalVisibleViewMore(false);
+    }
     if (foodModalVisibleViewMore === true) {
-      setFoodModalVisibleViewMore(false)
+      setFoodModalVisibleViewMore(false);
+    }
+    if (activitiesModalVisibleViewMore === true) {
+      setActivitiesModalVisibleViewMore(false);
     }
   };
   const handleModalViewMoreCancel = (e) => {
     console.log(e);
-    if (modalVisibleViewMore ===true){
-      setModalVisibleViewMore(false);}
-      if (foodModalVisibleViewMore === true) {
-        setFoodModalVisibleViewMore(false)}
+    if (modalVisibleViewMore === true) {
+      setModalVisibleViewMore(false);
+    }
+    if (foodModalVisibleViewMore === true) {
+      setFoodModalVisibleViewMore(false);
+    }
+    if (activitiesModalVisibleViewMore === true) {
+      setActivitiesModalVisibleViewMore(false);
+    }
   };
 
   // useEffect(() => {
@@ -174,16 +218,17 @@ const Dashboard = () => {
   // }, [savedPlans, showSaveModal]);
 
   const saveNewPlan = async (planName) => {
+    setFailPlanSave(false);
     const planChecker = (planName) => {
       const planByName = savedPlans.find(
         (plan) => plan.title === planName.planName
       );
-      console.log(planByName, planName, savedPlans);
+
       return planByName || null;
     };
     if (planChecker(planName, savedPlans) === null) {
       setFailSave(false);
-      console.log(planName);
+
       await axios.post(`${API_URL}/api/plans`, planName, {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -203,21 +248,21 @@ const Dashboard = () => {
 
   const saveToPlan = async (event) => {
     event.preventDefault();
+    setFailPlanSave(false);
     const googleId = event.target.className;
     const combinedData = foodData.concat(nightlifeData, activitiesData);
     const dataToInject = combinedData.find(
       (location) => location.googlePlacesId === googleId
     );
-    console.log("item", dataToInject);
+
     const { id } = event.target;
-    console.log("event", id);
-    console.log("saved plan");
+
     const placeChecker = (googleId) => {
       const planToCheck = savedPlans.find((plans) => plans._id === id);
       const placeById = planToCheck.places.find(
         (place) => place.googlePlacesId === googleId
       );
-      console.log(placeById, googleId, savedPlans);
+
       return placeById || null;
     };
 
@@ -462,7 +507,11 @@ const Dashboard = () => {
         >
           {!showResults ? null : (
             <Collapse
-              defaultActiveKey={["foodPanel", "activitiesPanel", "nightlifePanel"]}
+              defaultActiveKey={[
+                "foodPanel",
+                "activitiesPanel",
+                "nightlifePanel",
+              ]}
               key="collapse table"
               onChange={callback}
               style={{
@@ -501,6 +550,7 @@ const Dashboard = () => {
                         actions={[
                           <div>
                             <Button
+                              id="foodSaveBtn"
                               type="primary"
                               onClick={showSaveModal}
                               shape="round"
@@ -515,6 +565,7 @@ const Dashboard = () => {
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
+                                id="foodSaveBtn"
                               >
                                 <StarOutlined
                                   style={{
@@ -528,8 +579,9 @@ const Dashboard = () => {
                               </div>
                             </Button>
                             <Modal
+                            id="foodSaveBtn"
                               title="Save To a Plan"
-                              visible={modalVisibleSave}
+                              visible={foodModalVisibleSave}
                               onOk={handleModalSaveOk}
                               onCancel={handleModalSaveCancel}
                               cancelButtonProps={{ style: { display: "none" } }}
@@ -569,8 +621,9 @@ const Dashboard = () => {
                                     }}
                                   />
                                 </Form.Item>
-                                <Form.Item>
+                                <Form.Item id="foodSaveBtn">
                                   <Button
+                                  id="foodSaveBtn"
                                     type="primary"
                                     htmlType="submit"
                                     style={{
@@ -666,7 +719,7 @@ const Dashboard = () => {
                           </div>,
                           <div>
                             <Button
-                            id="foodButton"
+                              id="foodButton"
                               type="primary"
                               onClick={showModalViewMore}
                               style={{
@@ -681,7 +734,6 @@ const Dashboard = () => {
                                 id="foodButton"
                               >
                                 <SearchOutlined
-                                
                                   style={{
                                     display: "inline-block",
                                     verticalAlign: "middle",
@@ -717,7 +769,7 @@ const Dashboard = () => {
                               >
                                 {item.review.map((rev) => (
                                   <Comment
-                                  key={`review food ${rev.time}`}
+                                    key={`review food ${rev.time}`}
                                     author={rev.author_name}
                                     avatar={
                                       <Avatar
@@ -791,160 +843,164 @@ const Dashboard = () => {
                         key={`activites ${item.googlePlacesId}`}
                         actions={[
                           <div>
-                          <Button
-                            type="primary"
-                            onClick={showSaveModal}
-                            shape="round"
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
-                            }}
-                          >
-                            <div
-                              className="icons-list"
-                              style={{ color: "white" }}
-                            >
-                              <StarOutlined
-                                style={{
-                                  display: "inline-block",
-                                  verticalAlign: "middle",
-                                  marginRight: "5px",
-                                  marginBottom: "2px",
-                                }}
-                              />
-                              Save to plan
-                            </div>
-                          </Button>
-                          <Modal
-                            title="Save To a Plan"
-                            visible={modalVisibleSave}
-                            onOk={handleModalSaveOk}
-                            onCancel={handleModalSaveCancel}
-                            cancelButtonProps={{ style: { display: "none" } }}
-                            okButtonProps={{
-                              danger: true,
-                              shape: "round",
-                              background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
-                            }}
-                            style={{ borderRadius: "20px", padding: "15px" }}
-                          >
-                            <Form
-                              name="newPlan"
-                              layout="inline"
-                              onFinish={saveNewPlan}
-                              initialValues={{
-                                PlanName: {
-                                  planName: "",
-                                },
+                            <Button
+                              id="ActivitiesSaveBtn"
+                              type="primary"
+                              onClick={showSaveModal}
+                              shape="round"
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
                               }}
                             >
-                              <Form.Item
-                                name="planName"
-                                label="New Plan: "
-                                rules={[
-                                  {
-                                    require: true,
-                                    message: "please enter a name",
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  placeholder="Plan to Crete"
-                                  style={{
-                                    borderRadius: "25px",
-                                    marginBottom: "10px",
-                                  }}
-                                />
-                              </Form.Item>
-                              <Form.Item>
-                                <Button
-                                  type="primary"
-                                  htmlType="submit"
-                                  style={{
-                                    background:
-                                      "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
-                                  }}
-                                  shape="round"
-                                >
-                                  Save
-                                </Button>
-                              </Form.Item>
-                            </Form>
-                            {failSave ? (
-                              <p style={{ color: "red" }}>
-                                Please enter unique plan name
-                              </p>
-                            ) : null}
-                            {failPlanSave ? (
-                              <p style={{ color: "red" }}>
-                                Place already exists in selected plan
-                              </p>
-                            ) : null}
-                            <p>existing plans:</p>
-                            {!savedPlans.length ? (
-                              <p>
-                                No saved plans yet, please save a new one
-                                above
-                                <PushpinOutlined
-                                  style={{ paddingLeft: "10px" }}
-                                />
-                              </p>
-                            ) : (
                               <div
-                                style={{
-                                  height: "300px",
-                                  overflow: "scroll",
-                                  overflowX: "hidden",
+                                id="ActivitiesSaveBtn"
+                                className="icons-list"
+                                style={{ color: "white" }}
+                              >
+                                <StarOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                Save to plan
+                              </div>
+                            </Button>
+                            <Modal
+                            id="ActivitiesSaveBtn"
+                              title="Save To a Plan 1"
+                              visible={activitiesModalVisibleSave}
+                              onOk={handleModalSaveOk}
+                              onCancel={handleModalSaveCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                              style={{ borderRadius: "20px", padding: "15px" }}
+                            >
+                              <Form
+                                name="newPlan"
+                                layout="inline"
+                                onFinish={saveNewPlan}
+                                initialValues={{
+                                  PlanName: {
+                                    planName: "",
+                                  },
                                 }}
                               >
-                                {savedPlans.map((plan) => {
-                                  return (
-                                    <p key={`plan activities ${plan._id}`}>
-                                      <Tag
-                                        color="volcano"
-                                        style={{
-                                          borderRadius: "25px",
-                                          fontSize: "15px",
-                                          height: "22px",
-                                          paddingLeft: "10px",
-                                          paddingRight: "10px",
-                                        }}
-                                      >
+                                <Form.Item
+                                  name="planName"
+                                  label="New Plan: "
+                                  rules={[
+                                    {
+                                      require: true,
+                                      message: "please enter a name",
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    placeholder="Plan to Crete"
+                                    style={{
+                                      borderRadius: "25px",
+                                      marginBottom: "10px",
+                                    }}
+                                  />
+                                </Form.Item>
+                                <Form.Item id="ActivitiesSaveBtn">
+                                  <Button
+                                  id="ActivitiesSaveBtn"
+                                    type="primary"
+                                    htmlType="submit"
+                                    style={{
+                                      background:
+                                        "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                                    }}
+                                    shape="round"
+                                  >
+                                    Save
+                                  </Button>
+                                </Form.Item>
+                              </Form>
+                              {failSave ? (
+                                <p style={{ color: "red" }}>
+                                  Please enter unique plan name
+                                </p>
+                              ) : null}
+                              {failPlanSave ? (
+                                <p style={{ color: "red" }}>
+                                  Place already exists in selected plan
+                                </p>
+                              ) : null}
+                              <p>existing plans:</p>
+                              {!savedPlans.length ? (
+                                <p>
+                                  No saved plans yet, please save a new one
+                                  above
+                                  <PushpinOutlined
+                                    style={{ paddingLeft: "10px" }}
+                                  />
+                                </p>
+                              ) : (
+                                <div
+                                  style={{
+                                    height: "300px",
+                                    overflow: "scroll",
+                                    overflowX: "hidden",
+                                  }}
+                                >
+                                  {savedPlans.map((plan) => {
+                                    return (
+                                      <p key={`plan activities ${plan._id}`}>
+                                        <Tag
+                                          color="volcano"
+                                          style={{
+                                            borderRadius: "25px",
+                                            fontSize: "15px",
+                                            height: "22px",
+                                            paddingLeft: "10px",
+                                            paddingRight: "10px",
+                                          }}
+                                        >
+                                          <a
+                                            id={plan._id}
+                                            className={item.googlePlacesId}
+                                            onClick={saveToPlan}
+                                          >
+                                            {plan.title}
+                                          </a>
+                                        </Tag>
                                         <a
                                           id={plan._id}
-                                          className={item.googlePlacesId}
-                                          onClick={saveToPlan}
-                                        >
-                                          {plan.title}
-                                        </a>
-                                      </Tag>
-                                      <a
-                                        id={plan._id}
-                                        onClick={deletePlan}
-                                        style={{
-                                          float: "right",
-                                          paddingRight: "50px",
-                                        }}
-                                      >
-                                        <DeleteOutlined
+                                          onClick={deletePlan}
                                           style={{
-                                            paddingRight: "10px",
-                                            paddingBottom: "5px",
+                                            float: "right",
+                                            paddingRight: "50px",
                                           }}
-                                        />{" "}
-                                        Delete
-                                      </a>
-                                    </p>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </Modal>
-                          {/* <SaveModal modalVisibleSave = {modalVisibleSave}
+                                        >
+                                          <DeleteOutlined
+                                            style={{
+                                              paddingRight: "10px",
+                                              paddingBottom: "5px",
+                                            }}
+                                          />{" "}
+                                          Delete
+                                        </a>
+                                      </p>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </Modal>
+                            {/* <SaveModal modalVisibleSave = {modalVisibleSave}
 handleModalSaveOk = {handleModalSaveOk}
 handleModalSaveCancel = {handleModalSaveCancel}
 saveNewPlan = {saveNewPlan}
@@ -954,76 +1010,76 @@ savedPlans = {savedPlans}
 saveToPlan = {saveToPlan}
 item = {item}
 deletePlan = {deletePlan} /> */}
-                        </div>,
-                        <div>
-                          <Button
-                          id="activitiesButton"
-                            type="primary"
-                            onClick={showModalViewMore}
-                            style={{
-                              background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
-                            }}
-                            shape="round"
-                          >
-                            <div
-                              className="icons-list"
-                              style={{ color: "white" }}
+                          </div>,
+                          <div>
+                            <Button
                               id="activitiesButton"
-                            >
-                              <SearchOutlined
-                                style={{
-                                  display: "inline-block",
-                                  verticalAlign: "middle",
-                                  marginRight: "5px",
-                                  marginBottom: "2px",
-                                }}
-                              />
-                              View More Info
-                            </div>
-                          </Button>
-                          <Modal
-                            title="Latest Reviews"
-                            visible={activitiesModalVisibleViewMore}
-                            onOk={handleModalViewMoreOk}
-                            onCancel={handleModalViewMoreCancel}
-                            cancelButtonProps={{ style: { display: "none" } }}
-                            okButtonProps={{
-                              danger: true,
-                              shape: "round",
-                              background:
-                                "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
-                            }}
-                            style={{ borderRadius: "20px", padding: "15px" }}
-                          >
-                            <div
+                              type="primary"
+                              onClick={showModalViewMore}
                               style={{
-                                height: "600px",
-                                overflow: "scroll",
-                                overflowX: "hidden",
-                                width: "auto",
-                                paddingRight: "30px",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
                               }}
+                              shape="round"
                             >
-                              {item.review.map((rev) => (
-                                <Comment
-                                key={`activities review ${rev.time}`}
-                                  author={rev.author_name}
-                                  avatar={
-                                    <Avatar
-                                      src={rev.profile_photo_url}
-                                      alt={rev.author_name}
-                                    />
-                                  }
-                                  content={<p>{rev.text}</p>}
-                                  datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                >
-                                  <Divider />
-                                </Comment>
-                              ))}
-                            </div>
-                          </Modal>
-                        </div>,
+                              <div
+                                className="icons-list"
+                                style={{ color: "white" }}
+                                id="activitiesButton"
+                              >
+                                <SearchOutlined
+                                  style={{
+                                    display: "inline-block",
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                    marginBottom: "2px",
+                                  }}
+                                />
+                                View More Info
+                              </div>
+                            </Button>
+                            <Modal
+                              title="Latest Reviews"
+                              visible={activitiesModalVisibleViewMore}
+                              onOk={handleModalViewMoreOk}
+                              onCancel={handleModalViewMoreCancel}
+                              cancelButtonProps={{ style: { display: "none" } }}
+                              okButtonProps={{
+                                danger: true,
+                                shape: "round",
+                                background:
+                                  "linear-gradient(135deg, rgb(255,77,79) 0%, rgb(247,205,105) 100%)",
+                              }}
+                              style={{ borderRadius: "20px", padding: "15px" }}
+                            >
+                              <div
+                                style={{
+                                  height: "600px",
+                                  overflow: "scroll",
+                                  overflowX: "hidden",
+                                  width: "auto",
+                                  paddingRight: "30px",
+                                }}
+                              >
+                                {item.review.map((rev) => (
+                                  <Comment
+                                    key={`activities review ${rev.time}`}
+                                    author={rev.author_name}
+                                    avatar={
+                                      <Avatar
+                                        src={rev.profile_photo_url}
+                                        alt={rev.author_name}
+                                      />
+                                    }
+                                    content={<p>{rev.text}</p>}
+                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                  >
+                                    <Divider />
+                                  </Comment>
+                                ))}
+                              </div>
+                            </Modal>
+                          </div>,
                         ]}
                         extra={
                           <img
@@ -1295,7 +1351,7 @@ deletePlan = {deletePlan} /> */}
                               >
                                 {item.review.map((rev) => (
                                   <Comment
-                                  key={`review nightlife ${rev.time}`}
+                                    key={`review nightlife ${rev.time}`}
                                     author={rev.author_name}
                                     avatar={
                                       <Avatar
