@@ -280,6 +280,8 @@ const Dashboard = () => {
       console.log("injected Data", data);
       setFailPlanSave(false);
       setModalVisibleSave(false);
+      setFoodModalVisibleSave(false);
+      setActivitiesModalVisibleSave(false);
     } else {
       setFailPlanSave(true);
       showSaveModal();
