@@ -136,9 +136,10 @@ const Dashboard = () => {
   }, [setSavedPlans, user.token]);
 
   const showSaveModal = async (e) => {
+    console.log(e.target.id)
     if (e.target.id === "foodSaveBtn") {
       setFoodModalVisibleSave(true);
-    } else if (e.target.id === "activitiesSaveBtn") {
+    } else if (e.target.id === "ActivitiesSaveBtn") {
       setActivitiesModalVisibleSave(true);
     } else {
       setModalVisibleSave(true);
@@ -840,7 +841,7 @@ const Dashboard = () => {
                     dataSource={activitiesData}
                     renderItem={(item) => (
                       <List.Item
-                        key={`activites ${item.googlePlacesId}`}
+                        key={`activities ${item.googlePlacesId}`}
                         actions={[
                           <div>
                             <Button
