@@ -136,7 +136,7 @@ const Dashboard = () => {
   }, [setSavedPlans, user.token]);
 
   const showSaveModal = async (e) => {
-    console.log(e.target.id)
+    console.log("show save", e.target.id)
     if (e.target.id === "foodSaveBtn") {
       setFoodModalVisibleSave(true);
     } else if (e.target.id === "ActivitiesSaveBtn") {
@@ -217,6 +217,20 @@ const Dashboard = () => {
   //   console.log("save modal reload");
   //   showSaveModal();
   // }, [savedPlans, showSaveModal]);
+const success = ({planName}) => {
+  if (modalVisibleSave === true) {
+    setModalVisibleSave(false);
+  }
+  if (foodModalVisibleSave === true) {
+    setFoodModalVisibleSave(false);
+  }
+  if (activitiesModalVisibleSave === true) {
+    setActivitiesModalVisibleSave(false);
+  }
+   Modal.success({
+    content: `${planName} saved! try adding a place to it.`,
+  });
+}
 
   const saveNewPlan = async (planName) => {
     setFailPlanSave(false);
@@ -235,9 +249,13 @@ const Dashboard = () => {
           Authorization: `Bearer ${user.token}`,
         },
       });
+      
+      
+      success(planName)
 
-      setFailSave(false);
-      showSaveModal();
+setFailSave(false);
+      // showSaveModal(planName);
+
       // const { foodResults, nightlifeResults, activitiesResults } = data;
       // setFoodData(foodResults);
       // setModalVisibleSave(false);
@@ -607,6 +625,7 @@ const Dashboard = () => {
                                 }}
                               >
                                 <Form.Item
+                                id="foodSaveBtn"
                                   name="planName"
                                   label="New Plan: "
                                   rules={[
@@ -635,7 +654,7 @@ const Dashboard = () => {
                                     }}
                                     shape="round"
                                   >
-                                    Save
+                                    <span id="foodSaveBtn">Save</span>
                                   </Button>
                                 </Form.Item>
                               </Form>
