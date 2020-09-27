@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/holiday-planner-client/static/css/main.a2eaec7a.chunk.css",
-    "main.js": "/holiday-planner-client/static/js/main.65c252b6.chunk.js",
-    "main.js.map": "/holiday-planner-client/static/js/main.65c252b6.chunk.js.map",
+    "main.js": "/holiday-planner-client/static/js/main.8eb60f61.chunk.js",
+    "main.js.map": "/holiday-planner-client/static/js/main.8eb60f61.chunk.js.map",
     "runtime-main.js": "/holiday-planner-client/static/js/runtime-main.75aeda02.js",
     "runtime-main.js.map": "/holiday-planner-client/static/js/runtime-main.75aeda02.js.map",
     "static/css/2.6df4c8f8.chunk.css": "/holiday-planner-client/static/css/2.6df4c8f8.chunk.css",
-    "static/js/2.eef871da.chunk.js": "/holiday-planner-client/static/js/2.eef871da.chunk.js",
-    "static/js/2.eef871da.chunk.js.map": "/holiday-planner-client/static/js/2.eef871da.chunk.js.map",
+    "static/js/2.970465ed.chunk.js": "/holiday-planner-client/static/js/2.970465ed.chunk.js",
+    "static/js/2.970465ed.chunk.js.map": "/holiday-planner-client/static/js/2.970465ed.chunk.js.map",
     "index.html": "/holiday-planner-client/index.html",
-    "precache-manifest.92582daf4b6554b89f511acaf2d9c444.js": "/holiday-planner-client/precache-manifest.92582daf4b6554b89f511acaf2d9c444.js",
+    "precache-manifest.b9386c7f9655f2d15542182170ff4da6.js": "/holiday-planner-client/precache-manifest.b9386c7f9655f2d15542182170ff4da6.js",
     "service-worker.js": "/holiday-planner-client/service-worker.js",
     "static/css/2.6df4c8f8.chunk.css.map": "/holiday-planner-client/static/css/2.6df4c8f8.chunk.css.map",
     "static/css/main.a2eaec7a.chunk.css.map": "/holiday-planner-client/static/css/main.a2eaec7a.chunk.css.map",
-    "static/js/2.eef871da.chunk.js.LICENSE.txt": "/holiday-planner-client/static/js/2.eef871da.chunk.js.LICENSE.txt",
+    "static/js/2.970465ed.chunk.js.LICENSE.txt": "/holiday-planner-client/static/js/2.970465ed.chunk.js.LICENSE.txt",
     "static/media/a.png": "/holiday-planner-client/static/media/a.5f5c1e11.png",
     "static/media/mountains.jpg": "/holiday-planner-client/static/media/mountains.fea06681.jpg",
     "static/media/palmTree.jpg": "/holiday-planner-client/static/media/palmTree.9bb365dd.jpg",
@@ -22,8 +22,8 @@
   "entrypoints": [
     "static/js/runtime-main.75aeda02.js",
     "static/css/2.6df4c8f8.chunk.css",
-    "static/js/2.eef871da.chunk.js",
+    "static/js/2.970465ed.chunk.js",
     "static/css/main.a2eaec7a.chunk.css",
-    "static/js/main.65c252b6.chunk.js"
+    "static/js/main.8eb60f61.chunk.js"
   ]
 }
