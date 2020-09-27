@@ -71,6 +71,8 @@ const Dashboard = () => {
   const [savedPlans, setSavedPlans] = useState("");
   const [failSave, setFailSave] = useState(false);
   const [failPlanSave, setFailPlanSave] = useState(false);
+  const [placeToSave, setPlaceToSave] = useState("");
+  const [placeToReview, setPlaceToReview] = useState("");
 
   //should be a way to extract true or false from switch without function as it's in a form.item?
   const handleFoodSwitch = (checked) => {
@@ -114,7 +116,7 @@ const Dashboard = () => {
 
         setLoading(false);
 
-       console.log("submitForm")
+        console.log("submitForm");
       } catch (error) {
         setError(`Login failed - ${error.message}`);
       }
@@ -136,10 +138,13 @@ const Dashboard = () => {
   }, [setSavedPlans, user.token]);
 
   const showSaveModal = async (e) => {
-    console.log("show save", e.target.id)
-    if (e.target.id === "foodSaveBtn") {
+    const btnId = e.target.id.split(" ");
+    const btnName = btnId[0];
+    const btnGoogleId = btnId[1];
+    console.log("show save", btnId);
+    if (btnName === "foodSaveBtn") {
       setFoodModalVisibleSave(true);
-    } else if (e.target.id === "ActivitiesSaveBtn") {
+    } else if (btnName === "ActivitiesSaveBtn") {
       setActivitiesModalVisibleSave(true);
     } else {
       setModalVisibleSave(true);
@@ -150,7 +155,7 @@ const Dashboard = () => {
       },
     });
     setSavedPlans(data.allPlans);
-    
+    setPlaceToSave(btnGoogleId);
   };
   const handleModalSaveOk = (e) => {
     console.log(e);
@@ -176,10 +181,21 @@ const Dashboard = () => {
     }
   };
   const showModalViewMore = (e) => {
+    const reviewId = e.target.id.split(" ");
+    const reviewName = reviewId[0];
+    const reviewGoogleId = reviewId[1];
+    console.log("show save", e.target.id);
+
     console.log(e.target);
-    if (e.target.id === "foodButton") {
+
+    const combinedData = foodData.concat(nightlifeData, activitiesData);
+    const dataToInject = combinedData.find(
+      (location) => location.googlePlacesId === reviewGoogleId
+    );
+    setPlaceToReview(dataToInject);
+    if (reviewName === "foodButton") {
       setFoodModalVisibleViewMore(true);
-    } else if (e.target.id === "activitiesButton") {
+    } else if (reviewName === "activitiesButton") {
       setActivitiesModalVisibleViewMore(true);
     } else {
       setModalVisibleViewMore(true);
@@ -217,20 +233,20 @@ const Dashboard = () => {
   //   console.log("save modal reload");
   //   showSaveModal();
   // }, [savedPlans, showSaveModal]);
-const success = ({planName}) => {
-  if (modalVisibleSave === true) {
-    setModalVisibleSave(false);
-  }
-  if (foodModalVisibleSave === true) {
-    setFoodModalVisibleSave(false);
-  }
-  if (activitiesModalVisibleSave === true) {
-    setActivitiesModalVisibleSave(false);
-  }
-   Modal.success({
-    content: `${planName} saved! try adding a place to it.`,
-  });
-}
+  const success = ({ planName }) => {
+    if (modalVisibleSave === true) {
+      setModalVisibleSave(false);
+    }
+    if (foodModalVisibleSave === true) {
+      setFoodModalVisibleSave(false);
+    }
+    if (activitiesModalVisibleSave === true) {
+      setActivitiesModalVisibleSave(false);
+    }
+    Modal.success({
+      title: `${planName} saved! try adding a place to it.`,
+    });
+  };
 
   const saveNewPlan = async (planName) => {
     setFailPlanSave(false);
@@ -249,11 +265,9 @@ const success = ({planName}) => {
           Authorization: `Bearer ${user.token}`,
         },
       });
-      
-      
-      success(planName)
+      success(planName);
 
-setFailSave(false);
+      setFailSave(false);
       // showSaveModal(planName);
 
       // const { foodResults, nightlifeResults, activitiesResults } = data;
@@ -261,31 +275,61 @@ setFailSave(false);
       // setModalVisibleSave(false);
     } else {
       setFailSave(true);
-      showSaveModal();
     }
   };
 
   const saveToPlan = async (event) => {
+    // event.preventDefault();
+    // setFailPlanSave(false);
+    // const googleId = event.target.className;
+    // console.log("save plan google id", googleId)
+    // const combinedData = foodData.concat(nightlifeData, activitiesData);
+    // const dataToInject = combinedData.find(
+    //   (location) => location.googlePlacesId === googleId
+    // );
+
+    // const { id } = event.target;
+
+    // const placeChecker = (googleId) => {
+    //   const planToCheck = savedPlans.find((plans) => plans._id === id);
+    //   const placeById = planToCheck.places.find(
+    //     (place) => place.googlePlacesId === googleId
+    //   );
+
+    //   return placeById || null;
+    // };
+
+    // if (placeChecker(googleId, savedPlans) === null) {
+    //   const data = await axios.put(
+    //     `${API_URL}/api/plans/${id}/addPlace`,
+    //     dataToInject,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${user.token}`,
+    //       },
+    //     }
+    //   );
+
     event.preventDefault();
     setFailPlanSave(false);
-    const googleId = event.target.className;
+    console.log("save plan google id", placeToSave);
     const combinedData = foodData.concat(nightlifeData, activitiesData);
     const dataToInject = combinedData.find(
-      (location) => location.googlePlacesId === googleId
+      (location) => location.googlePlacesId === placeToSave
     );
 
     const { id } = event.target;
 
-    const placeChecker = (googleId) => {
+    const placeChecker = (placeToSave) => {
       const planToCheck = savedPlans.find((plans) => plans._id === id);
       const placeById = planToCheck.places.find(
-        (place) => place.googlePlacesId === googleId
+        (place) => place.googlePlacesId === placeToSave
       );
 
       return placeById || null;
     };
 
-    if (placeChecker(googleId, savedPlans) === null) {
+    if (placeChecker(placeToSave, savedPlans) === null) {
       const data = await axios.put(
         `${API_URL}/api/plans/${id}/addPlace`,
         dataToInject,
@@ -302,10 +346,22 @@ setFailSave(false);
       setActivitiesModalVisibleSave(false);
     } else {
       setFailPlanSave(true);
-      showSaveModal();
     }
   };
-
+  const deleteSuccess = () => {
+    if (modalVisibleSave === true) {
+      setModalVisibleSave(false);
+    }
+    if (foodModalVisibleSave === true) {
+      setFoodModalVisibleSave(false);
+    }
+    if (activitiesModalVisibleSave === true) {
+      setActivitiesModalVisibleSave(false);
+    }
+    Modal.success({
+      content: `Plan Deleted`,
+    });
+  };
   const deletePlan = async (event) => {
     event.preventDefault();
     const { id } = event.target;
@@ -315,7 +371,8 @@ setFailSave(false);
         Authorization: `Bearer ${user.token}`,
       },
     });
-    showSaveModal();
+    console.log(data);
+    deleteSuccess();
   };
 
   return (
@@ -571,7 +628,7 @@ setFailSave(false);
                         actions={[
                           <div>
                             <Button
-                              id="foodSaveBtn"
+                              id={`foodSaveBtn ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showSaveModal}
                               shape="round"
@@ -586,7 +643,7 @@ setFailSave(false);
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
-                                id="foodSaveBtn"
+                                id={`foodSaveBtn ${item.googlePlacesId}`}
                               >
                                 <StarOutlined
                                   style={{
@@ -600,7 +657,7 @@ setFailSave(false);
                               </div>
                             </Button>
                             <Modal
-                            id="foodSaveBtn"
+                              id="foodSaveBtn"
                               title="Save To a Plan"
                               visible={foodModalVisibleSave}
                               onOk={handleModalSaveOk}
@@ -625,7 +682,7 @@ setFailSave(false);
                                 }}
                               >
                                 <Form.Item
-                                id="foodSaveBtn"
+                                  id="foodSaveBtn"
                                   name="planName"
                                   label="New Plan: "
                                   rules={[
@@ -645,7 +702,7 @@ setFailSave(false);
                                 </Form.Item>
                                 <Form.Item id="foodSaveBtn">
                                   <Button
-                                  id="foodSaveBtn"
+                                    id="foodSaveBtn"
                                     type="primary"
                                     htmlType="submit"
                                     style={{
@@ -741,7 +798,7 @@ setFailSave(false);
                           </div>,
                           <div>
                             <Button
-                              id="foodButton"
+                              id={`foodButton ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showModalViewMore}
                               style={{
@@ -753,7 +810,7 @@ setFailSave(false);
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
-                                id="foodButton"
+                                id={`foodButton ${item.googlePlacesId}`}
                               >
                                 <SearchOutlined
                                   style={{
@@ -780,32 +837,34 @@ setFailSave(false);
                               }}
                               style={{ borderRadius: "20px", padding: "15px" }}
                             >
-                              <div
-                                style={{
-                                  height: "600px",
-                                  overflow: "scroll",
-                                  overflowX: "hidden",
-                                  width: "auto",
-                                  paddingRight: "30px",
-                                }}
-                              >
-                                {item.review.map((rev) => (
-                                  <Comment
-                                    key={`review food ${rev.time}`}
-                                    author={rev.author_name}
-                                    avatar={
-                                      <Avatar
-                                        src={rev.profile_photo_url}
-                                        alt={rev.author_name}
-                                      />
-                                    }
-                                    content={<p>{rev.text}</p>}
-                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                  >
-                                    <Divider />
-                                  </Comment>
-                                ))}
-                              </div>
+                              {!placeToReview ? null : (
+                                <div
+                                  style={{
+                                    height: "600px",
+                                    overflow: "scroll",
+                                    overflowX: "hidden",
+                                    width: "auto",
+                                    paddingRight: "30px",
+                                  }}
+                                >
+                                  {placeToReview.review.map((rev) => (
+                                    <Comment
+                                      key={`review food ${rev.time}`}
+                                      author={rev.author_name}
+                                      avatar={
+                                        <Avatar
+                                          src={rev.profile_photo_url}
+                                          alt={rev.author_name}
+                                        />
+                                      }
+                                      content={<p>{rev.text}</p>}
+                                      datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                    >
+                                      <Divider />
+                                    </Comment>
+                                  ))}
+                                </div>
+                              )}
                             </Modal>
                           </div>,
                         ]}
@@ -866,7 +925,7 @@ setFailSave(false);
                         actions={[
                           <div>
                             <Button
-                              id="ActivitiesSaveBtn"
+                              id={`ActivitiesSaveBtn ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showSaveModal}
                               shape="round"
@@ -879,7 +938,7 @@ setFailSave(false);
                               }}
                             >
                               <div
-                                id="ActivitiesSaveBtn"
+                                id={`ActivitiesSaveBtn ${item.googlePlacesId}`}
                                 className="icons-list"
                                 style={{ color: "white" }}
                               >
@@ -895,7 +954,7 @@ setFailSave(false);
                               </div>
                             </Button>
                             <Modal
-                            id="ActivitiesSaveBtn"
+                              id="ActivitiesSaveBtn"
                               title="Save To a Plan 1"
                               visible={activitiesModalVisibleSave}
                               onOk={handleModalSaveOk}
@@ -939,7 +998,7 @@ setFailSave(false);
                                 </Form.Item>
                                 <Form.Item id="ActivitiesSaveBtn">
                                   <Button
-                                  id="ActivitiesSaveBtn"
+                                    id="ActivitiesSaveBtn"
                                     type="primary"
                                     htmlType="submit"
                                     style={{
@@ -1035,7 +1094,7 @@ deletePlan = {deletePlan} /> */}
                           </div>,
                           <div>
                             <Button
-                              id="activitiesButton"
+                              id={`activitiesButton ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showModalViewMore}
                               style={{
@@ -1047,7 +1106,7 @@ deletePlan = {deletePlan} /> */}
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
-                                id="activitiesButton"
+                                id={`activitiesButton ${item.googlePlacesId}`}
                               >
                                 <SearchOutlined
                                   style={{
@@ -1074,32 +1133,34 @@ deletePlan = {deletePlan} /> */}
                               }}
                               style={{ borderRadius: "20px", padding: "15px" }}
                             >
-                              <div
-                                style={{
-                                  height: "600px",
-                                  overflow: "scroll",
-                                  overflowX: "hidden",
-                                  width: "auto",
-                                  paddingRight: "30px",
-                                }}
-                              >
-                                {item.review.map((rev) => (
-                                  <Comment
-                                    key={`activities review ${rev.time}`}
-                                    author={rev.author_name}
-                                    avatar={
-                                      <Avatar
-                                        src={rev.profile_photo_url}
-                                        alt={rev.author_name}
-                                      />
-                                    }
-                                    content={<p>{rev.text}</p>}
-                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                  >
-                                    <Divider />
-                                  </Comment>
-                                ))}
-                              </div>
+                              {!placeToReview ? null : (
+                                <div
+                                  style={{
+                                    height: "600px",
+                                    overflow: "scroll",
+                                    overflowX: "hidden",
+                                    width: "auto",
+                                    paddingRight: "30px",
+                                  }}
+                                >
+                                  {placeToReview.review.map((rev) => (
+                                    <Comment
+                                      key={`review food ${rev.time}`}
+                                      author={rev.author_name}
+                                      avatar={
+                                        <Avatar
+                                          src={rev.profile_photo_url}
+                                          alt={rev.author_name}
+                                        />
+                                      }
+                                      content={<p>{rev.text}</p>}
+                                      datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                    >
+                                      <Divider />
+                                    </Comment>
+                                  ))}
+                                </div>
+                              )}
                             </Modal>
                           </div>,
                         ]}
@@ -1160,6 +1221,7 @@ deletePlan = {deletePlan} /> */}
                         actions={[
                           <div>
                             <Button
+                              id={`nightlifeSaveBtn ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showSaveModal}
                               shape="round"
@@ -1174,6 +1236,7 @@ deletePlan = {deletePlan} /> */}
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
+                                id={`nightlifeSaveBtn ${item.googlePlacesId}`}
                               >
                                 <StarOutlined
                                   style={{
@@ -1325,6 +1388,7 @@ deletePlan = {deletePlan} /> */}
                           </div>,
                           <div>
                             <Button
+                              id={`nightlifeButton ${item.googlePlacesId}`}
                               type="primary"
                               onClick={showModalViewMore}
                               style={{
@@ -1336,6 +1400,7 @@ deletePlan = {deletePlan} /> */}
                               <div
                                 className="icons-list"
                                 style={{ color: "white" }}
+                                id={`nightlifeButton ${item.googlePlacesId}`}
                               >
                                 <SearchOutlined
                                   style={{
@@ -1362,32 +1427,34 @@ deletePlan = {deletePlan} /> */}
                               }}
                               style={{ borderRadius: "20px", padding: "15px" }}
                             >
-                              <div
-                                style={{
-                                  height: "600px",
-                                  overflow: "scroll",
-                                  overflowX: "hidden",
-                                  width: "auto",
-                                  paddingRight: "30px",
-                                }}
-                              >
-                                {item.review.map((rev) => (
-                                  <Comment
-                                    key={`review nightlife ${rev.time}`}
-                                    author={rev.author_name}
-                                    avatar={
-                                      <Avatar
-                                        src={rev.profile_photo_url}
-                                        alt={rev.author_name}
-                                      />
-                                    }
-                                    content={<p>{rev.text}</p>}
-                                    datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
-                                  >
-                                    <Divider />
-                                  </Comment>
-                                ))}
-                              </div>
+                              {!placeToReview ? null : (
+                                <div
+                                  style={{
+                                    height: "600px",
+                                    overflow: "scroll",
+                                    overflowX: "hidden",
+                                    width: "auto",
+                                    paddingRight: "30px",
+                                  }}
+                                >
+                                  {placeToReview.review.map((rev) => (
+                                    <Comment
+                                      key={`review food ${rev.time}`}
+                                      author={rev.author_name}
+                                      avatar={
+                                        <Avatar
+                                          src={rev.profile_photo_url}
+                                          alt={rev.author_name}
+                                        />
+                                      }
+                                      content={<p>{rev.text}</p>}
+                                      datetime={`${rev.relative_time_description}  Rating: ${rev.rating}/5`}
+                                    >
+                                      <Divider />
+                                    </Comment>
+                                  ))}
+                                </div>
+                              )}
                             </Modal>
                           </div>,
                         ]}
