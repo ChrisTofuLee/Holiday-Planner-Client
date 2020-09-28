@@ -1,35 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import InfiniteScroll from "react-infinite-scroller";
-import {
-  Col,
-  Row,
-  Typography,
-  Card,
-  Button,
-  Form,
-  Switch,
-  Input,
-  Collapse,
-  List,
-  Avatar,
-  Space,
-  Modal,
-  Divider,
-  Comment,
-  Spin,
-  Tag,
-  Skeleton,
-} from "antd";
+import { Button, Form, Input, Modal, Tag } from "antd";
 import {
   CloseOutlined,
-  CheckOutlined,
-  MessageOutlined,
-  LikeOutlined,
   PushpinOutlined,
   StarOutlined,
-  SearchOutlined,
-  LoadingOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 

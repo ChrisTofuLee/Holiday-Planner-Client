@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import SaveModal from "../components/SaveModal";
 import {
   Col,
   Row,
@@ -83,13 +82,11 @@ const Dashboard = () => {
   };
   const handleActivitiesSwitch = (checked) => {
     setActivitiesCheck(checked);
-    console.log(activitiesCheck);
   };
 
   // submit button functionality
   const handleFormSubmit = async ({ searchTerm }) => {
     if (!nightlifeCheck && !foodCheck && !activitiesCheck) {
-      console.log("check one please");
       setRequiredSwitch(true);
     } else {
       try {
@@ -108,7 +105,6 @@ const Dashboard = () => {
             Authorization: `Bearer ${user.token}`,
           },
         });
-        console.log(data);
         const { foodResults, nightlifeResults, activitiesResults } = data;
         setFoodData(foodResults);
         setNightlifeData(nightlifeResults);
@@ -116,7 +112,6 @@ const Dashboard = () => {
 
         setLoading(false);
 
-        console.log("submitForm");
       } catch (error) {
         setError(`Login failed - ${error.message}`);
       }
@@ -132,7 +127,6 @@ const Dashboard = () => {
         },
       });
       setSavedPlans(data.allPlans);
-      console.log("plan fetched");
     };
     fetchPlans();
   }, [setSavedPlans, user.token]);
@@ -141,7 +135,6 @@ const Dashboard = () => {
     const btnId = e.target.id.split(" ");
     const btnName = btnId[0];
     const btnGoogleId = btnId[1];
-    console.log("show save", btnId);
     if (btnName === "foodSaveBtn") {
       setFoodModalVisibleSave(true);
     } else if (btnName === "ActivitiesSaveBtn") {
@@ -158,7 +151,6 @@ const Dashboard = () => {
     setPlaceToSave(btnGoogleId);
   };
   const handleModalSaveOk = (e) => {
-    console.log(e);
     if (modalVisibleSave === true) {
       setModalVisibleSave(false);
     }
@@ -184,9 +176,6 @@ const Dashboard = () => {
     const reviewId = e.target.id.split(" ");
     const reviewName = reviewId[0];
     const reviewGoogleId = reviewId[1];
-    console.log("show save", e.target.id);
-
-    console.log(e.target);
 
     const combinedData = foodData.concat(nightlifeData, activitiesData);
     const dataToInject = combinedData.find(
@@ -202,7 +191,6 @@ const Dashboard = () => {
     }
   };
   const handleModalViewMoreOk = (e) => {
-    console.log(e);
     if (modalVisibleViewMore === true) {
       setModalVisibleViewMore(false);
     }
@@ -214,7 +202,6 @@ const Dashboard = () => {
     }
   };
   const handleModalViewMoreCancel = (e) => {
-    console.log(e);
     if (modalVisibleViewMore === true) {
       setModalVisibleViewMore(false);
     }
@@ -312,7 +299,6 @@ const Dashboard = () => {
 
     event.preventDefault();
     setFailPlanSave(false);
-    console.log("save plan google id", placeToSave);
     const combinedData = foodData.concat(nightlifeData, activitiesData);
     const dataToInject = combinedData.find(
       (location) => location.googlePlacesId === placeToSave
@@ -339,7 +325,6 @@ const Dashboard = () => {
           },
         }
       );
-      console.log("injected Data", data);
       setFailPlanSave(false);
       setModalVisibleSave(false);
       setFoodModalVisibleSave(false);
@@ -365,13 +350,11 @@ const Dashboard = () => {
   const deletePlan = async (event) => {
     event.preventDefault();
     const { id } = event.target;
-    console.log(id);
     const data = await axios.delete(`${API_URL}/api/plans/${id}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     });
-    console.log(data);
     deleteSuccess();
   };
 

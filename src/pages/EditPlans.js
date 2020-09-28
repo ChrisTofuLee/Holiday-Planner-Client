@@ -7,15 +7,9 @@ import {
   Row,
   Card,
   Collapse,
-  List,
-  Avatar,
-  Space,
-  Modal,
   Divider,
   Button,
   Spin,
-  Tag,
-  Skeleton,
   Select,
 } from "antd";
 import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -49,7 +43,6 @@ const EditPlans = () => {
       setSavedPlans(data.allPlans);
   }
   const deletePlan = async (event) => {
-    console.log(event);
     const id = event._id;
     await axios.delete(`${API_URL}/api/plans/${id}`, {
       headers: {
@@ -65,8 +58,6 @@ const EditPlans = () => {
     const planId = buttonInfo[0]
     const googlePlacesId = buttonInfo[1]
 
-    console.log("p", buttonInfo)
-    console.log("g", googlePlacesId)
     await axios.put(
       `${API_URL}/api/plans/${planId}/removePlace`,
       { googlePlacesId },
@@ -99,7 +90,6 @@ const EditPlans = () => {
       }}
     />
   );
-console.log(savedPlans)
   const antIcon = (
     <LoadingOutlined style={{ fontSize: 150, margin: "0 auto" }} spin />
   );
@@ -151,7 +141,6 @@ console.log(savedPlans)
               }}
             >
               {savedPlans.map((plan) => {
-                console.log(plan._id);
                 return (
                   <Panel
                     header={plan.title}

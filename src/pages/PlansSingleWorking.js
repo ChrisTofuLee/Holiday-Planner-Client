@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useTransition, useSpring, useChain, config } from "react-spring";
 import { Container, Item } from "./planStyles";
-import PlanBox from "../components/PlanBox";
-import testData from "./testData";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import mountain from "../assets/mountains.jpg";
@@ -22,11 +20,9 @@ const PlansSingleWorking = () => {
         },
       });
       setSavedPlans(data.allPlans);
-      console.log("plan fetched");
     };
     fetchPlans();
   }, [setSavedPlans, user.token]);
-  console.log(savedPlans);
   // Build a spring and catch its ref
   const springRef = useRef();
   const { size, opacity, ...rest } = useSpring({
@@ -62,7 +58,7 @@ const PlansSingleWorking = () => {
   ]);
 
   const testClick = (item, index) => {
-    console.log("hihihihih", item, "i", index);
+    ("hihihihih", item, "i", index);
   };
   return (
     <div

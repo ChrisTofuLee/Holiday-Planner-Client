@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import ReactDOM from "react-dom";
 import {
   useTransition,
   useSpring,
@@ -7,11 +6,9 @@ import {
   config,
   animated,
 } from "react-spring";
-import { Avatar, Row, Button, Divider } from "antd";
-import { Container, Item } from "../pages/planStyles";
+import { Avatar } from "antd";
 
 const PlanBox = ({ plan }) => {
-  console.log("here", plan);
   const [open, set] = useState(false);
   // Build a spring and catch its ref
   const springRef = useRef();
