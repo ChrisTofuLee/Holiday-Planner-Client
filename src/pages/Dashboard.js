@@ -938,7 +938,7 @@ const Dashboard = () => {
                             </Button>
                             <Modal
                               id="ActivitiesSaveBtn"
-                              title="Save To a Plan 1"
+                              title="Save To a Plan"
                               visible={activitiesModalVisibleSave}
                               onOk={handleModalSaveOk}
                               onCancel={handleModalSaveCancel}
