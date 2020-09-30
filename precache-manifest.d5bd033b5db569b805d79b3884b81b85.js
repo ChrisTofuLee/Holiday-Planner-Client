@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b46e2b3d6ef343a799fb0f3b7f76d8a0",
+    "revision": "d312581fe43d31d023db2217705d822a",
     "url": "/holiday-planner-client/index.html"
   },
   {
-    "revision": "28d3a4282a8bbe97db3b",
+    "revision": "847cd95fe23fa100a0cb",
     "url": "/holiday-planner-client/static/css/2.6df4c8f8.chunk.css"
   },
   {
-    "revision": "b2b3717653265d55374c",
+    "revision": "0d149e12336084e25bc2",
     "url": "/holiday-planner-client/static/css/main.a2eaec7a.chunk.css"
   },
   {
-    "revision": "28d3a4282a8bbe97db3b",
-    "url": "/holiday-planner-client/static/js/2.970465ed.chunk.js"
+    "revision": "847cd95fe23fa100a0cb",
+    "url": "/holiday-planner-client/static/js/2.615de666.chunk.js"
   },
   {
     "revision": "3453b8997016469371284a28c0e873e2",
-    "url": "/holiday-planner-client/static/js/2.970465ed.chunk.js.LICENSE.txt"
+    "url": "/holiday-planner-client/static/js/2.615de666.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b2b3717653265d55374c",
-    "url": "/holiday-planner-client/static/js/main.8eb60f61.chunk.js"
+    "revision": "0d149e12336084e25bc2",
+    "url": "/holiday-planner-client/static/js/main.ea9f3e45.chunk.js"
   },
   {
     "revision": "9297101a02cba24aa9f9",
